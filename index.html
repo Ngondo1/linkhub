@@ -3,160 +3,192 @@
 <head>
   <meta charset="utf-8" />
   <title>LinkHub — Kenya’s Honest Talent Hub (Beta)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="LinkHub is a new Kenyan platform connecting skilled blue-collar talent to real jobs. Built by Mr Ngondo Kimemia, our beta invites early users to co-shape a safe, transparent marketplace." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description"
+        content="LinkHub is a new Kenyan platform connecting blue-collar talent to real jobs. Built by Ngondo Kimemia. Public beta now open." />
 
-  <!-- Inter font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <!-- preconnect for Google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"/>
 
   <style>
-    /* ---------- COLOUR SYSTEM ---------- */
-    :root{
-      --teal-deep:#004d47;      /* trust */
-      --teal-mid:#006b62;       /* nav hover */
-      --ivory:#f9faf9;         /* light bg */
-      --charcoal:#202124;       /* dark text bg */
-      --emerald:#009d76;        /* subtle accents */
-      --orange:#ff9800;         /* CTA */
-      --orange-dark:#e67d00;
-      --radius:16px;
-      --trans:0.3s ease;
-    }
+  /* ========== COLOUR & TYPO SYSTEM =================================== */
+  :root{
+    --teal-deep:#004d47;
+    --teal-mid:#006b62;
+    --ivory:#f9faf9;
+    --charcoal:#202124;
+    --orange:#ff9800;
+    --orange-dark:#e67d00;
+    --card-bg:rgba(255,255,255,.06);
+    --card-bg-hover:rgba(255,255,255,.12);
+    --radius:12px;
+    --trans:.3s ease;
+    --bg-dark:#1c1c1c;
+    --text-light:#f1f1f1;
+  }
+  html{scroll-behavior:smooth;font-size:100%}
+  @media(min-width:1440px){html{font-size:110%}}
+  @media(max-width:600px){html{font-size:93%}}
+  *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+  body,button,input,textarea{
+    font-family:'Inter',Arial,sans-serif;
+    font-size:1rem;line-height:1.6;color:var(--text-light);
+    background:var(--bg-dark);
+  }
+  h2,h3{font-weight:900;color:var(--teal-deep)}
+  p{color:var(--text-light);margin-bottom:20px}
+  a{color:var(--orange);text-decoration:none;transition:color .3s ease}
 
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{font-family:Inter,Arial,sans-serif;background:#0f0f0f;color:#fff;}
+  /* ========== SKIP LINK ============================================= */
+  .skip{position:absolute;left:-999px;top:auto}
+  .skip:focus{left:8px;top:8px;background:#000;color:#fff;padding:8px;
+              border-radius:6px;z-index:10000}
 
-    /* ---------- NAV ---------- */
-    header{
-      background:var(--teal-deep);
-      display:flex;justify-content:space-between;align-items:center;
-      padding:20px 8%;position:sticky;top:0;z-index:1000;
-    }
-    header h1{font-size:clamp(1.6rem,2vw+1rem,2rem);font-weight:900}
-    nav{display:flex;gap:32px}
-    nav a{position:relative;font-weight:500;color:#fff;text-decoration:none;outline-offset:4px}
-    nav a::after{content:\"\";position:absolute;left:0;bottom:-4px;width:0;height:2px;background:var(--orange);transition:var(--trans)}
-    nav a:hover::after,nav a:focus-visible::after{width:100%}
-    #burger{display:none;font-size:32px;cursor:pointer;color:#fff}
+  /* ========== NAV BAR ============================================== */
+  header{
+    background:var(--teal-deep);
+    padding:22px 8%;
+    display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:1000
+  }
+  .logo{font-size:1.9rem;font-weight:900;color:#fff;margin:0}
+  nav{display:flex;gap:32px}
+  nav a{font-weight:600;position:relative}
+  nav a::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;
+               background:var(--orange);transition:var(--trans)}
+  nav a:hover::after,nav a:focus-visible::after{width:100%}
+  #burger{display:none;font-size:1.9rem;color:#fff;background:none;border:none}
+  @media(max-width:768px){
+    nav{display:none;flex-direction:column;gap:18px;background:var(--teal-deep);
+        position:absolute;top:70px;right:8%;padding:24px 30px;border-radius:var(--radius)}
+    nav.open{display:flex}
+    #burger{display:block}
+    nav a{padding-block:6px}
+  }
 
-    @media(max-width:768px){
-      nav{display:none;flex-direction:column;gap:20px;background:var(--teal-deep);position:absolute;top:70px;right:8%;padding:24px 34px;border-radius:var(--radius)}
-      nav.open{display:flex}
-      #burger{display:block}
-    }
+  /* ========== HERO ================================================== */
+  #home{scroll-margin-top:80px}
+  .hero{
+    min-height:95vh;height:auto;
+    padding:4rem 8% 2rem;
+    display:flex;justify-content:center;align-items:center;text-align:center;
+    background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6));
+    color:#fff;
+  }
+  .hero-content{max-width:1000px;width:100%}
+  .hero h1{position:absolute;clip:rect(1px,1px,1px,1px)} /* visually-hidden */
+  .hero h2{font-size:clamp(2.5rem,4vw+1rem,4rem);font-weight:900;line-height:1.15;margin-bottom:1.5rem}
+  .hero p{font-size:clamp(1.1rem,1vw+.8rem,1.35rem);max-width:800px;margin:0 auto;color:#e8e8e8}
+  @media(max-width:480px){
+    .hero{padding:90px 6% 60px}
+    .hero h2{font-size:clamp(1.8rem,7vw,2.4rem)}
+    .hero p{font-size:clamp(1rem,4.5vw,1.15rem);margin-bottom:1.8rem}
+  }
 
-    /* ---------- HERO ---------- */
-    .hero{
-      min-height:95vh;
-      display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
-      background:
-        linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
-        url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1600&q=70')
-        center/cover no-repeat;
-      padding:0 8%;
-    }
-    .hero h2{
-      font-size:clamp(2.5rem,4vw+1rem,4rem);
-      font-weight:900;line-height:1.15;margin-bottom:1.2rem;
-    }
-    .hero p.tagline{
-      font-size:clamp(1.1rem,1vw+0.8rem,1.35rem);
-      max-width:800px;margin-bottom:2.8rem;color:#e8e8e8;
-    }
+  /* ==== animations */
+  @keyframes riseIn{0%{transform:translateY(50px);opacity:0}
+                    100%{transform:translateY(0);opacity:1}}
+  @keyframes zoomIn{0%{transform:scale(.92);opacity:0}
+                    100%{transform:scale(1);opacity:1}}
+  .animate-rise{animation:riseIn .9s ease-out forwards}
+  .animate-zoom{animation:zoomIn 1.2s ease-out .3s forwards}
 
-    /* ---------- PILLARS ---------- */
-    .pillars{
-      display:flex;flex-wrap:wrap;gap:32px;justify-content:center;
-      background:#333;padding:70px 6%;
-    }
-    .pillar{
-      flex:1 1 300px;background:rgba(255,255,255,0.08);
-      border-radius:var(--radius);padding:46px 28px;text-align:center;transition:var(--trans);
-      box-shadow:0 6px 10px rgba(0,0,0,0.25);
-    }
-    .pillar:hover{transform:translateY(-8px);box-shadow:0 10px 16px rgba(0,0,0,0.35)}
-    .pillar h3{color:var(--orange);font-size:1.5rem;margin-bottom:18px;font-weight:700}
-    .pillar p{color:#f1f1f1;font-size:1rem;line-height:1.8;margin-bottom:26px}
-    .pillar a.btn{display:inline-block;background:var(--orange);padding:12px 28px;border-radius:8px;font-weight:600;color:#fff;text-decoration:none;transition:background var(--trans)}
-    .pillar a.btn:hover{background:var(--orange-dark)}
+  /* ========== PILLARS / SERVICES =================================== */
+  .pillars{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;background:#333;padding:70px 6%}
+  .pillar{flex:1 1 300px;max-width:480px;background:var(--card-bg);padding:46px 28px;
+          border-radius:var(--radius);text-align:center;box-shadow:0 6px 10px rgba(0,0,0,.25);
+          transition:var(--trans);backdrop-filter:blur(3px)}
+  .pillar:hover{background:var(--card-bg-hover);transform:translateY(-6px)}
+  .pillar h3{font-size:1.5rem;color:var(--orange);margin-bottom:18px}
+  .pillar p{font-size:1rem;line-height:1.8;margin-bottom:26px}
+  .btn{display:inline-block;background:var(--orange);color:#fff;padding:12px 28px;border-radius:8px;font-weight:600;transition:background var(--trans)}
+  .btn:hover{background:var(--orange-dark)}
+  @media(max-width:768px){.pillars{flex-direction:column;align-items:center}}
 
-    /* ---------- HOW IT WORKS ---------- */
-    .timeline{
-      background:var(--ivory);color:var(--charcoal);padding:90px 8%;text-align:center;
-    }
-    .timeline h2{font-size:2.2rem;color:var(--teal-deep);font-weight:900;margin-bottom:50px}
-    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:40px;max-width:1100px;margin:auto}
-    .step{background:#fff;border-radius:var(--radius);padding:36px 28px;box-shadow:0 4px 12px rgba(0,0,0,.1);transition:var(--trans)}
-    .step:hover{transform:translateY(-6px)}
-    .step span{display:block;font-size:46px;font-weight:900;color:var(--teal-deep);margin-bottom:14px}
-    .step p{line-height:1.7}
+  /* ========== HOW IT WORKS timeline ================================ */
+  .timeline{background:var(--ivory);color:var(--charcoal);text-align:center;padding:90px 8%}
+  .timeline h2{font-size:2.2rem;margin-bottom:50px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:40px;max-width:1100px;margin:auto}
+  .step{background:#fff;border-radius:var(--radius);padding:36px 28px;box-shadow:0 4px 12px rgba(0,0,0,.1);transition:var(--trans)}
+  .step:hover{transform:translateY(-6px)}
+  .step span{display:block;font-size:46px;font-weight:900;color:var(--teal-deep);margin-bottom:14px}
 
-    /* ---------- INVITE ---------- */
-    .invite{background:var(--teal-deep);text-align:center;padding:70px 8%}
-    .invite h2{font-size:1.9rem;font-weight:800;margin-bottom:18px}
-    .invite p{font-size:1.05rem;max-width:760px;margin:auto;line-height:1.8;color:#e0e0e0}
+  /* ========== INVITE =============================================== */
+  .invite{background:var(--teal-deep);text-align:center;padding:70px 8%}
+  .invite h2{font-size:1.9rem;margin-bottom:18px}
+  .invite p{font-size:1.05rem;max-width:760px;margin:auto;line-height:1.8;color:#e0e0e0}
 
-    /* ---------- ABOUT ---------- */
-    #about{background:var(--ivory);color:var(--charcoal);padding:100px 8%;text-align:center}
-    #about h2{font-size:2.1rem;color:var(--teal-deep);font-weight:900;margin-bottom:24px}
-    #about p{font-size:1.06rem;max-width:840px;margin:auto;line-height:1.85}
-    #about strong{color:var(--orange)}
+  /* ========== ABOUT ================================================= */
+  #about{background:var(--ivory);color:var(--charcoal);text-align:center;padding:100px 8%}
+  #about h2{font-size:2.1rem;margin-bottom:24px}
+  #about p{font-size:1.06rem;max-width:840px;margin:auto;line-height:1.85}
+  #about strong{color:var(--orange)}
 
-    /* ---------- FAQ ---------- */
-    .faq{background:#1c1c1c;padding:90px 8%;color:#fff;text-align:center}
-    .faq h2{font-size:1.9rem;font-weight:800;margin-bottom:40px}
-    .faq-item{max-width:900px;margin:0 auto 34px;text-align:left}
-    .faq-item h3{font-size:1.15rem;color:var(--orange);margin-bottom:8px}
-    .faq-item p{line-height:1.8;font-size:0.97rem;color:#ddd}
+  /* ========== FAQ =================================================== */
+  .faq{background:#1c1c1c;color:#fff;text-align:center;padding:90px 8%}
+  .faq h2{font-size:1.9rem;margin-bottom:40px}
+  .faq-item{max-width:900px;margin:0 auto 34px;text-align:left}
+  .faq-item h3{font-size:1.15rem;color:var(--orange);margin-bottom:8px}
+  .faq-item p{font-size:.97rem;color:#ddd;line-height:1.8}
 
-    /* ---------- CONTACT ---------- */
-    #contact{background:var(--teal-mid);padding:100px 8% 110px;text-align:center}
-    #contact h2{font-size:1.95rem;font-weight:900;margin-bottom:32px}
-    form{max-width:500px;margin:auto;text-align:left}
-    label{display:block;margin-bottom:6px;font-weight:600}
-    input,textarea{
-      width:100%;padding:14px;margin-bottom:22px;border-radius:8px;border:none;font:inherit;
-    }
-    button{
-      background:var(--orange);color:#fff;border:none;padding:15px 30px;border-radius:8px;
-      font-size:1rem;cursor:pointer;transition:background var(--trans)
-    }
-    button:hover,button:focus-visible{background:var(--orange-dark)}
+  /* ========== CONTACT ============================================== */
+  #contact{background:var(--teal-mid);padding:100px 8% 110px;text-align:center}
+  #contact h2{font-size:1.95rem;margin-bottom:32px}
+  form{max-width:500px;margin:auto;text-align:left}
+  label{display:block;margin-bottom:6px;font-weight:600}
+  input,textarea{width:100%;padding:14px;margin-bottom:22px;border-radius:8px;border:none;font:inherit}
 
-    /* ---------- FOOTER ---------- */
-    footer{background:#002521;text-align:center;padding:26px 0;font-size:0.9rem}
+  /* buttons */
+  button{cursor:pointer;background:var(--orange);color:#fff;border:none;padding:12px 26px;border-radius:var(--radius);font-weight:600;transition:background var(--trans)}
+  button:hover{background:var(--orange-dark)}
 
-    /* ---------- RESPONSIVE ---------- */
-    @media(max-width:768px){
-      .hero h2{font-size:2.4rem}
-      .pillars{flex-direction:column}
-    }
+  /* focus rings */
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:3px solid var(--orange);outline-offset:2px}
+
+  /* ========== FOOTER =============================================== */
+  footer{background:#002521;text-align:center;padding:26px 0;font-size:.9rem;color:#ccc}
+
+  /* ========== LIGHT THEME toggle =================================== */
+  .light{--bg-dark:#fafafa;--text-light:#222;--card-bg:rgba(0,0,0,.03);--card-bg-hover:rgba(0,0,0,.08)}
+  .light body{background:var(--bg-dark);color:var(--text-light)}
+  .light p{color:#333}
+  .light header,.light footer{background:#e0e0e0;color:#222}
   </style>
 </head>
 <body>
 
+  <!-- Skip link for screen-readers -->
+  <a href="#home" class="skip">Skip to main content</a>
+
   <!-- NAV -->
   <header>
-    <h1>LinkHub</h1>
+    <p class="logo">LinkHub</p>
     <button id="burger" aria-label="Toggle navigation">☰</button>
-    <nav id="nav" aria-label="Primary">
+    <nav id="nav" aria-label="Primary navigation">
       <a href="#home">Home</a>
       <a href="#about">About</a>
       <a href="#services">Services</a>
       <a href="#contact">Contact</a>
     </nav>
+    <!-- Dark / light toggle -->
+    <button id="mode" aria-label="Toggle dark / light">🌓</button>
   </header>
 
   <main>
 
     <!-- HERO -->
     <section id="home" class="hero" aria-label="Introduction">
-      <h2>Connecting Blue-Collar Talent to Opportunities</h2>
-      <p class="tagline">
-        Built for Kenya, by Kenyans. We’re launching a transparent job marketplace—join
-        our public beta and help us craft a safer future of work.
-      </p>
+      <h1 class="visually-hidden">LinkHub – Honest Kenyan Talent Hub</h1>
+      <div class="hero-content">
+        <h2 class="animate-rise">Connecting Blue-Collar Talent to Opportunities</h2>
+        <p class="animate-zoom">
+          Built for Kenya, by Kenyans. We’re launching a transparent job marketplace —
+          join our public beta and help us craft a safer future of work.
+        </p>
+      </div>
     </section>
 
     <!-- PILLARS -->
@@ -168,12 +200,12 @@
       </article>
       <article class="pillar">
         <h3>Apply Seamlessly</h3>
-        <p>One profile unlocks diverse gigs—construction, repair, logistics and beyond.</p>
+        <p>One profile unlocks diverse gigs — construction, repair, logistics and beyond.</p>
         <a href="#" class="btn">Early Sign-Up</a>
       </article>
       <article class="pillar">
         <h3>Build Trust</h3>
-        <p>Transparent ratings will highlight the best workers and fairest employers—always.</p>
+        <p>Transparent ratings will highlight the best workers and fairest employers — always.</p>
         <a href="#" class="btn">Learn More</a>
       </article>
     </section>
@@ -182,7 +214,7 @@
     <section class="timeline" aria-label="How LinkHub works">
       <h2>How&nbsp;LinkHub&nbsp;Works</h2>
       <div class="steps">
-        <div class="step"><span>1</span><p>Create your free profile&nbsp;— worker or employer.</p></div>
+        <div class="step"><span>1</span><p>Create your free profile — worker or employer.</p></div>
         <div class="step"><span>2</span><p>Post or browse jobs; our queue ranks the best matches.</p></div>
         <div class="step"><span>3</span><p>Chat, agree terms, and track progress in your dashboard.</p></div>
         <div class="step"><span>4</span><p>Rate each other honestly, strengthening the whole community.</p></div>
@@ -194,7 +226,7 @@
       <h2>We’re in Open&nbsp;Beta</h2>
       <p>
         LinkHub is evolving weekly. Early adopters get direct influence on new features
-        and lifetime perks when we launch Version 1. Give it a spin and let us know how we can improve.
+        and lifetime perks when we launch Version&nbsp;1. Give it a spin and let us know how we can improve.
       </p>
     </section>
 
@@ -202,8 +234,8 @@
     <section id="about" aria-label="About LinkHub">
       <h2>Made in Kenya</h2>
       <p>
-        I’m <strong>Mr Ngondo Kimemia</strong>, a Nairobi-based developer driven to simplify how skilled
-        hands find honest work. My Brother, <em>Mr. Mwangi Kimemia</em>, will be the managing director, bringing the vision to life.
+        I’m <strong>Ngondo Kimemia</strong>, a Nairobi-based developer driven to simplify how skilled
+        hands find honest work. My brother <em>Mwangi Kimemia</em> will be the managing director.
         LinkHub is new, transparent, and community-driven — built for craftspeople who deserve better visibility and fair pay.
       </p>
     </section>
@@ -228,29 +260,48 @@
     <!-- CONTACT -->
     <section id="contact" aria-label="Contact form">
       <h2>Reach&nbsp;Out</h2>
-      <form>
+      <form action="#" method="post" novalidate>
         <label for="name">Name</label>
         <input id="name" type="text" placeholder="Your full name" required>
-
         <label for="email">Email</label>
         <input id="email" type="email" placeholder="you@example.com" required>
-
         <label for="msg">Message</label>
         <textarea id="msg" rows="5" placeholder="How can we help?" required></textarea>
-
         <button type="submit">Send Message</button>
       </form>
     </section>
 
   </main>
 
-  <footer>© 2025 LinkHub · Built by Mr Ngondo Kimemia in Nairobi</footer>
+  <footer>© 2025 LinkHub · Built by Ngondo Kimemia in Nairobi</footer>
 
-  <!-- Burger toggle -->
+  <!-- Performance: lazy-load hero image -->
   <script>
-    const burger=document.getElementById('burger');
-    const nav=document.getElementById('nav');
+    /* burger open / close */
+    const burger=document.getElementById('burger'),
+          nav=document.getElementById('nav');
     burger.onclick=()=>nav.classList.toggle('open');
+    nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+
+    /* dark / light toggle */
+    const mode=document.getElementById('mode'),
+          root=document.documentElement;
+    mode.onclick=()=>{root.classList.toggle('light');
+      localStorage.setItem('theme',root.classList.contains('light')?'light':'dark');};
+    if(localStorage.getItem('theme')==='light'){root.classList.add('light');}
+
+    /* Lazy hero BG (WebP w/ fallback) */
+    if('IntersectionObserver'in window){
+      const hero=document.querySelector('.hero');
+      const setBg=()=>hero.style.background=
+        "linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),image-set('hero.webp' type('image/webp'), 'hero-africa.jpg')";
+      new IntersectionObserver(([e],o)=>{if(e.isIntersecting){setBg();o.disconnect();}})
+      .observe(hero);
+    }else{
+      /* fallback for very old browsers */
+      document.querySelector('.hero')
+        .style.background="linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),url('hero-africa.jpg') center/cover no-repeat";
+    }
   </script>
 </body>
 </html>
