@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-CORS
+Flask-Session
+python-dotenv
+PyMySQL          # ← NEW, SQLAlchemy’s MySQL driver
