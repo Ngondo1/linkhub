@@ -181,9 +181,135 @@
 
   <main>
 
+    <section class="hero-card" style="background: #f2f6f8; padding: 60px 5% 80px; text-align: center;">
+  <h1 style="font-size: 2.3rem; color: var(--teal-deep); margin-bottom: 0.5rem;">
+    Find the Right Worker Instantly
+  </h1>
+  <p style="font-size: 1.1rem; color: #444; max-width: 700px; margin: 0 auto 2rem;">
+    Tell us what work you need done and where. We'll route it to the most relevant workers.
+  </p>
+
+  <form class="job-request-form" style="max-width: 640px; margin: auto; display: grid; gap: 1rem;">
+    <div style="text-align: left;">
+      <label for="jobCategory" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Job Category</label>
+      <select id="jobCategory" name="jobCategory" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;">
+        <option hidden selected value="">Choose a type of work…</option>
+        <option value="construction">Construction Work</option>
+        <option value="plumbing">Plumbing Work</option>
+        <option value="electrical">Electrical Work</option>
+      </select>
+    </div>
+
+    <div style="text-align: left;">
+      <label for="location" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Location</label>
+      <select id="location" name="location" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;">
+        <option hidden selected value="">Choose your location…</option>
+        <option>Nairobi</option>
+        <option>Kiambu</option>
+        <option>Thika</option>
+        <option>Kisumu</option>
+        <option>Eldoret</option>
+        <option>Mombasa</option>
+      </select>
+    </div>
+
+    <div style="text-align: left;">
+      <label for="description" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Brief Description</label>
+      <textarea id="description" name="description" rows="4" placeholder="e.g. Need a plumber to fix leaking pipes in the kitchen..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;"></textarea>
+    </div>
+
+    <button type="submit" style="margin-top: 1rem; background-color: var(--orange); color: white; font-weight: bold; border: none; padding: 14px 24px; border-radius: 12px; cursor: pointer;">
+      Submit Request
+    </button>
+  </form>
+</section>
+<style>
+.hero-form {
+  background: var(--light-bg, #f8f9fa);
+  padding: 60px 8% 80px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-form-card {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  max-width: 520px;
+  width: 100%;
+  text-align: left;
+}
+
+.hero-form-card h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: var(--teal-deep, #004d45);
+  font-weight: 900;
+  text-align: center;
+}
+
+.hero-form-card p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.hero-form-card label {
+  display: block;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  color: #222;
+}
+
+.hero-form-card select,
+.hero-form-card textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  resize: vertical;
+  background: #fefefe;
+}
+
+.hero-form-card button {
+  background: var(--orange, #ff6600);
+  color: white;
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+.hero-form-card button:hover {
+  background: #e65c00;
+}
+
+@media (max-width: 480px) {
+  .hero-form-card {
+    padding: 30px 20px;
+  }
+
+  .hero-form-card h1 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+
+
+
     <!-- HERO -->
     <section id="home" class="hero" aria-label="Introduction">
-      <h1 class="visually-hidden">LinkHub – Honest Kenyan Talent Hub</h1>
+      <h1 class="visually-hidden">LinkHub – Linking Kenyan Talent</h1>
       <div class="hero-content">
         <h2 class="animate-rise">Connecting Blue-Collar Talent to Opportunities</h2>
         <p class="animate-zoom">
