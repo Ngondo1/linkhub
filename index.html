@@ -182,22 +182,32 @@
 
   <main>
 
-    <section class="hero-card" style="background: #f2f6f8; padding: 60px 5% 80px; text-align: center;">
+<section class="hero-card" style="background: #f2f6f8; padding: 60px 5% 80px; text-align: center;">
   <h1 style="font-size: 2.3rem; color: var(--teal-deep); margin-bottom: 0.5rem;">
-    Find the Right Worker Instantly
+    Find the Right  skilled labour for your project
   </h1>
   <p style="font-size: 1.1rem; color: #444; max-width: 700px; margin: 0 auto 2rem;">
     Tell us what work you need done and where. We'll route it to the most relevant workers.
   </p>
 
-  <form class="job-request-form" style="max-width: 640px; margin: auto; display: grid; gap: 1rem;">
+  <form action="/search" method="GET" class="job-request-form" style="max-width: 640px; margin: auto; display: grid; gap: 1rem;">
     <div style="text-align: left;">
       <label for="jobCategory" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Job Category</label>
       <select id="jobCategory" name="jobCategory" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;">
-        <option hidden selected value="">Choose a type of work…</option>
-        <option value="construction">Construction Work</option>
-        <option value="plumbing">Plumbing Work</option>
-        <option value="electrical">Electrical Work</option>
+        <option hidden selected value="">Choose a type of construction work…</option>
+        <option value="Woodwork">Woodwork</option>
+        <option value="Plumbing Work">Plumbing Work</option>
+        <option value="Electrical Work">Electrical Work</option>
+        <option value="Cabinetry">cabinetry</option>
+        <option value="Masonery">Masonery</option>
+        <option value="Roofing">Roofing</option>
+        <option value="Painting">Painting</option>
+        <option value="Gypsum">Gypsum</option>
+        <option value="tiling">tiling</option>
+        <option value="Landscaping">Landscaping</option>
+        <option value="Carpentry">Carpentry</option>
+        <option value="Electrical Work">Paving / Roadwork</option>
+
       </select>
     </div>
 
@@ -205,22 +215,22 @@
       <label for="location" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Location</label>
       <select id="location" name="location" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;">
         <option hidden selected value="">Choose your location…</option>
-        <option>Westlands</option>
-        <option>Kilimani</option>
-        <option>Lavington</option>
-        <option>Loresho</option>
-        <option>Kiambu road</option>
-        <option>Waiyaki way</option>
-        <option>Nairobi County</option>
-        <option>kiambu county</option>
-        <option>coast region</option>
-        <option>western kenya</option>
+        <option value="Westlands">Westlands</option>
+        <option value="Kilimani">Kilimani</option>
+        <option value="Lavington">Lavington</option>
+        <option value="Loresho">Loresho</option>
+        <option value="Kiambu Road">Kiambu road</option>
+        <option value="Waiyaki Way">Waiyaki way</option>
+        <option value="Nairobi County">Nairobi County</option>
+        <option value="Kiambu County">Kiambu county</option>
+        <option value="Coast Region">Coast region</option>
+        <option value="Western Kenya">Western Kenya</option>
       </select>
     </div>
 
     <div style="text-align: left;">
       <label for="description" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Brief Description</label>
-      <textarea id="description" name="description" rows="4" placeholder="e.g. Need a plumber to fix leaking pipes in the kitchen..., Need a electrician to repair my spoilt microwave..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;"></textarea>
+      <textarea id="description" name="description" rows="4" placeholder="e.g. Need a plumber to fix leaking pipes in the kitchen..., Need an electrician to repair my spoilt microwave..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;"></textarea>
     </div>
 
     <button type="submit" style="margin-top: 1rem; background-color: var(--orange); color: white; font-weight: bold; border: none; padding: 14px 24px; border-radius: 12px; cursor: pointer;">
@@ -228,6 +238,8 @@
     </button>
   </form>
 </section>
+
+
 <style>
 .hero-form {
   background: var(--light-bg, #f8f9fa);
@@ -367,8 +379,8 @@
     <section id="about" aria-label="About LinkHub">
       <h2>Made in Kenya</h2>
     <p style="max-width:720px;margin:auto;text-align:center;font-size:1.05rem;">
-      This page isn’t about us — it’s about <em>you</em>. If you’ve ever fixed a leak, wired a room, or laid a perfect brick, LinkHub was built in your honour. We stay behind the scenes so your craft can take the spotlight.<br><br>
-      Behind the code: <strong>Mr. Ngondo Kimemia</strong> (Founder) &amp; <strong>Mr. Mwangi Kimemia</strong> (CEO) — ensuring technology never overshadows the real heroes: Kenya’s skilled workers.
+      This page isn’t about us, it’s about <em>you</em>. If you’ve ever fixed a leak, wired a room, or laid a perfect brick, LinkHub was built in your honour. We stay behind the scenes so your craft can take the spotlight.<br><br>
+      Behind the scenes: <strong>Mr. Ngondo Kimemia</strong> (Founder) &amp; <strong>Mr. Mwangi Kimemia</strong> (CEO) — ensuring technology never overshadows the real heroes: Kenya’s skilled workers.
     </p>
     </section>
 
@@ -377,7 +389,7 @@
       <h2>Quick&nbsp;Answers</h2>
       <div class="faq-item">
         <h3>Is LinkHub free?</h3>
-        <p>Yes. During beta, creating a profile and posting jobs costs nothing.</p>
+        <p>Yes. During establishment, creating a profile and posting jobs costs nothing.</p>
       </div>
       <div class="faq-item">
         <h3>When do ratings go live?</h3>

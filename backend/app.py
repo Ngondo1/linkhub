@@ -63,6 +63,7 @@ Session(app)
 from routes import main_bp
 app.register_blueprint(main_bp)
 
+
 # -------------------------------------------------------------------
 # 6. Fallback – serve index.html for any unknown path (optional)
 #    This makes “/contact”, “/about”, etc. work with client-side routing.
