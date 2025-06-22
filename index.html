@@ -211,22 +211,16 @@
       </select>
     </div>
 
-    <div style="text-align: left;">
-      <label for="location" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Location</label>
-      <select id="location" name="location" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;">
-        <option hidden selected value="">Choose your location…</option>
-        <option value="Westlands">Westlands</option>
-        <option value="Kilimani">Kilimani</option>
-        <option value="Lavington">Lavington</option>
-        <option value="Loresho">Loresho</option>
-        <option value="Kiambu Road">Kiambu road</option>
-        <option value="Waiyaki Way">Waiyaki way</option>
-        <option value="Nairobi County">Nairobi County</option>
-        <option value="Kiambu County">Kiambu county</option>
-        <option value="Coast Region">Coast region</option>
-        <option value="Western Kenya">Western Kenya</option>
-      </select>
-    </div>
+<div style="text-align: left;">
+  <label for="location" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Your Location</label>
+  
+  <input type="text" id="location" name="location" placeholder="Loading your location..." required
+         style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px; margin-bottom: 10px;" readonly>
+
+  <div id="map" style="width: 100%; height: 300px; border-radius: 10px; border: 1px solid #ccc;"></div>
+
+  <button type="button" onclick="detectLocation()" style="margin-top: 10px; background: #00796b; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;">Detect My Location</button>
+</div>
 
     <div style="text-align: left;">
       <label for="description" style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Brief Description</label>
@@ -238,6 +232,63 @@
     </button>
   </form>
 </section>
+
+#script for map and location detection
+<script>
+  let map, marker;
+
+  function initMap() {
+    const defaultPos = { lat: -1.286389, lng: 36.817223 }; // Nairobi
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: defaultPos,
+      zoom: 12,
+    });
+
+    marker = new google.maps.Marker({
+      position: defaultPos,
+      map: map,
+      draggable: true,
+      title: "Drag to refine your location"
+    });
+
+    google.maps.event.addListener(marker, 'dragend', function () {
+      updateLocationInput(marker.getPosition());
+    });
+
+    updateLocationInput(defaultPos);
+  }
+
+  function detectLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          map.setCenter(pos);
+          marker.setPosition(pos);
+          updateLocationInput(pos);
+        },
+        function () {
+          alert("Geolocation failed or was denied.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
+  function updateLocationInput(position) {
+    const lat = position.lat;
+    const lng = position.lng;
+    document.getElementById("location").value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  }
+</script>
+
+<!-- Google Maps API Key: Replace YOUR_API_KEY with a real one -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AlzaSyDtwHYW_qjndhYw224ZehI9ZSjn9MCfBUg&callback=initMap" async defer></script>
+
 
 
 <style>
