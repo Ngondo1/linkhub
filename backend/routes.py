@@ -1,6 +1,12 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, redirect, url_for, flash, jsonify
+from flask import current_app as app
+from flask import send_file  # for serving static files if needed
+from flask_cors import CORS
+from mpesa import stk_push
+from flask_session import Session
 from models import db, User, Employer, Employee, Job, Match
 from datetime import datetime
+import os
 
 routes_bp = Blueprint("routes", __name__)
 
@@ -127,3 +133,98 @@ def dashboard():
     jobs = Job.query.count()
     matches = Match.query.count()
     return render_template("dashboard.html", user_count=users, job_count=jobs, match_count=matches)
+
+# GET: Fetch all technicians with known coordinates
+@routes_bp.route("/api/technicians", methods=["GET"])
+def get_technicians():
+    technicians = Employee.query.filter_by(role='technician').all()
+    tech_list = [
+        {
+            "id": tech.id,
+            "name": tech.full_name,
+            "lat": tech.latitude,
+            "lng": tech.longitude,
+            "specialty": tech.specialty
+        }
+        for tech in technicians if tech.latitude and tech.longitude
+    ]
+    return jsonify(tech_list)
+
+# POST: Update technician location by ID
+@routes_bp.route("/api/technicians/location", methods=["POST"])
+def update_technician_location():
+    data = request.get_json()
+    tech_id = data.get("id")
+    lat = data.get("lat")
+    lng = data.get("lng")
+
+    technician = Employee.query.get(tech_id)
+    if not technician or technician.role != 'technician':
+        return jsonify({"error": "Technician not found"}), 404
+
+    technician.latitude = lat
+    technician.longitude = lng
+    db.session.commit()
+
+    return jsonify({"message": "Location updated"}), 200
+
+# GET: Retrieve technician markers for map display
+@routes_bp.route("/api/map/technicians", methods=["GET"])
+def get_map_technicians():
+    technicians = Employee.query.filter(Employee.latitude.isnot(None), Employee.longitude.isnot(None)).all()
+    markers = [
+        {
+            "name": tech.full_name,
+            "specialty": tech.specialty,
+            "lat": tech.latitude,
+            "lng": tech.longitude
+        }
+        for tech in technicians
+    ]
+    return jsonify(markers)
+
+# POST: Submit current geolocation for technician (optional extension)
+@routes_bp.route("/api/map/location", methods=["POST"])
+def post_map_location():
+    data = request.get_json()
+    lat = data.get("lat")
+    lng = data.get("lng")
+    user = data.get("user")  # optional: associate location with a user
+
+    if not lat or not lng:
+        return jsonify({"error": "Missing coordinates"}), 400
+
+    # You could store the location temporarily or update a user profile here
+    return jsonify({"message": "Location received", "lat": lat, "lng": lng, "user": user}), 200
+
+
+#MPESA DARAJA
+@routes_bp.route("/mpesa/callback", methods=["POST"])
+def mpesa_callback():
+    data = request.get_json()
+    # Process the callback data as needed
+    # For example, save transaction details to the database
+    print("MPESA Callback Data:", data)
+    return jsonify({"status": "success"}), 200
+
+@routes_bp.route("/subscribe", methods=["GET", "POST"])
+def subscribe():
+    if request.method == "POST":
+        name = request.form["name"]
+        phone = request.form["phone"]
+        plan = request.form["plan"]
+
+        amount = 10 if plan == "basic" else 50
+
+        try:
+            if phone.startswith("07"):
+                phone = "254" + phone[1:]
+                print("About to call stk_push with:", phone, amount)
+            response = stk_push(phone=phone, amount=amount)
+            flash("STK push sent. Complete the payment on your phone.")
+        except Exception as e:
+            flash(f"Payment failed: {str(e)}")
+
+        return redirect(url_for("routes.subscribe"))
+
+    return render_template("subscription.html")

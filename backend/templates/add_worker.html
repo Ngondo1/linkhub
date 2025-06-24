@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkHub - Home</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>LinkHub</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+      <a href="/contact">Contact</a>
+      <a href="/add-worker">Add Worker</a>
+      <a href="/search">Search</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Connecting Blue-Collar Talent to Opportunities</h2>
+    <p>LinkHub bridges Kenya’s skilled workforce to jobs. Hire, work, and grow — fairly and transparently.</p>
+    <a href="/search"><button class="cta-button">Get Started</button></a>
+  </section>
+
+  <!-- Additional HTML pages below -->
+  <!-- about.html -->
+  <section class="page" id="about">
+    <h2>Made in Kenya</h2>
+    <p>LinkHub was built out of a deep respect for skilled hands — the artisans, workers, and problem-solvers who keep Kenya running. We don't just list jobs; we open doors to dignity, growth, and community. </p>
+  </section>
+
+  <!-- services.html -->
+  <section class="page" id="services">
+    <h2>What We Offer</h2>
+    <ul>
+      <li>Instant Job Matching</li>
+      <li>Verified Worker Listings</li>
+      <li>Secure MPESA Payments</li>
+      <li>Job History and Reputation Tracking</li>
+    </ul>
+  </section>
+
+  <!-- contact.html -->
+  <section class="page" id="contact">
+    <h2>Contact Us</h2>
+    <p>Email: <a href="mailto:support@linkhub.co.ke">support@linkhub.co.ke</a></p>
+    <p>Call: 0768 620 877 / 0714 883 024</p>
+    <p><a href="https://wa.me/254768620877">WhatsApp Chat</a></p>
+  </section>
+
+  <!-- add_worker.html -->
+  <section class="page" id="add-worker">
+    <h2>Add a New Worker</h2>
+    <form method="POST" action="/add-worker" class="form-card">
+      <label>Name: <input type="text" name="name" required></label>
+      <label>Phone No: <input type="text" name="phone_no" required></label>
+      <label>Age: <input type="number" name="age"></label>
+      <label>Gender: <input type="text" name="gender"></label>
+      <label>County: <input type="text" name="county"></label>
+      <label>Town: <input type="text" name="town"></label>
+      <label>Profession: <input type="text" name="profession"></label>
+      <label>Description:<textarea name="description"></textarea></label>
+      <button type="submit">Add Worker</button>
+    </form>
+  </section>
+
+  <!-- search.html -->
+  <section class="page" id="search">
+    <h2>Find a Worker</h2>
+    <form method="GET" action="/search">
+      <label>Job Category:
+        <select name="category">
+          <option value="">Select</option>
+          <option value="construction">Construction</option>
+          <option value="plumbing">Plumbing</option>
+          <option value="electrical">Electrical</option>
+        </select>
+      </label>
+      <label>Location:
+        <select name="location">
+          <option value="">Select</option>
+          <option value="Westlands">Westlands</option>
+          <option value="Kilimani">Kilimani</option>
+        </select>
+      </label>
+      <button type="submit">Search</button>
+    </form>
+  </section>
+
+  <!-- results.html -->
+  <section class="page" id="results">
+    <h2>Search Results</h2>
+    {% if jobs %}
+      <ul>
+        {% for job in jobs %}
+        <li>{{ job.job_title }} - {{ job.job_location }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No matching jobs found.</p>
+    {% endif %}
+  </section>
+
+  <footer class="footer">
+    &copy; 2025 LinkHub. Built in Kenya.
+  </footer>
+</body>
+</html>

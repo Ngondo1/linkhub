@@ -5,6 +5,7 @@ from flask_cors import CORS
 from flask_session import Session
 from dotenv import load_dotenv
 import os
+from models import db
 
 # -------------------------------------------------------------------
 # 1. Load environment variables
@@ -60,8 +61,8 @@ Session(app)
 # -------------------------------------------------------------------
 # 5. Register all routes from routes.py (single-file blueprint)
 # -------------------------------------------------------------------
-from routes import main_bp
-app.register_blueprint(main_bp)
+from routes import routes_bp
+app.register_blueprint(routes_bp)
 
 
 # -------------------------------------------------------------------
@@ -70,7 +71,8 @@ app.register_blueprint(main_bp)
 # -------------------------------------------------------------------
 @app.errorhandler(404)
 def not_found(e):
-    return send_file("../my-react-app/index.html")
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    return send_file(os.path.join(root_dir, "index.html"))
 
 # -------------------------------------------------------------------
 # 7. Start server

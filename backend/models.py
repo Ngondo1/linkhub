@@ -66,17 +66,11 @@ class User(db.Model):
     ethnicity = db.Column(db.String(100))
     description = db.Column(db.Text)
 
-    # One‑to‑one helper relationships
     employer = db.relationship("Employer", back_populates="user", uselist=False)
     employee = db.relationship("Employee", back_populates="user", uselist=False)
 
-    # Ratings convenience
-    sent_ratings = db.relationship(
-        "Rating", foreign_keys="Rating.rater_id", back_populates="rater"
-    )
-    received_ratings = db.relationship(
-        "Rating", foreign_keys="Rating.rated_id", back_populates="rated"
-    )
+    sent_ratings = db.relationship("Rating", foreign_keys="Rating.rater_id", back_populates="rater")
+    received_ratings = db.relationship("Rating", foreign_keys="Rating.rated_id", back_populates="rated")
 
     def __repr__(self):
         return f"<User {self.id} – {self.name}>"
@@ -87,7 +81,7 @@ class Employer(db.Model):
 
     id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     company_name = db.Column(db.String(150))
-    business_type_id = db.Column(db.Integer)  # FK to a BusinessType table if you add one
+    business_type_id = db.Column(db.Integer)
     registration_number = db.Column(db.String(50))
     company_email = db.Column(db.String(120))
     company_phone = db.Column(db.String(30))
@@ -97,7 +91,6 @@ class Employer(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
-    # Relationships
     user = db.relationship("User", back_populates="employer")
     jobs = db.relationship("Job", back_populates="employer", cascade="all, delete-orphan")
 
@@ -109,6 +102,13 @@ class Employee(db.Model):
     __tablename__ = "employees"
 
     id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+
+    # Technician-specific fields
+    role = db.Column(db.String(50), default="technician")
+    specialty = db.Column(db.String(120))
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+
     skills = db.Column(db.Text)
     years_of_experience = db.Column(db.Integer)
     expected_salary = db.Column(db.Integer)
@@ -118,7 +118,6 @@ class Employee(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
-    # Relationships
     user = db.relationship("User", back_populates="employee")
     applications = db.relationship("Application", back_populates="employee", cascade="all, delete-orphan")
     matches = db.relationship("Match", back_populates="employee", cascade="all, delete-orphan")
@@ -140,7 +139,6 @@ class Job(db.Model):
     post_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.Enum(JobStatus), default=JobStatus.listed)
 
-    # Relationships
     employer = db.relationship("Employer", back_populates="jobs")
     applications = db.relationship("Application", back_populates="job", cascade="all, delete-orphan")
     matches = db.relationship("Match", back_populates="job", cascade="all, delete-orphan")
@@ -158,7 +156,6 @@ class Application(db.Model):
     application_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.Enum(ApplicationStatus), default=ApplicationStatus.pending)
 
-    # Relationships
     job = db.relationship("Job", back_populates="applications")
     employee = db.relationship("Employee", back_populates="applications")
 
@@ -176,7 +173,6 @@ class Rating(db.Model):
     comment = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Relationships
     rater = db.relationship("User", foreign_keys=[rater_id], back_populates="sent_ratings")
     rated = db.relationship("User", foreign_keys=[rated_id], back_populates="received_ratings")
 
@@ -188,7 +184,7 @@ class Message(db.Model):
     __tablename__ = "messages"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))  # owner of the message
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     short_code = db.Column(db.Integer)
     send_time = db.Column(db.DateTime, default=datetime.utcnow)
     phone_no = db.Column(db.String(30))
@@ -221,7 +217,6 @@ class Match(db.Model):
 # ----------------------------------------------------------------------------
 
 def init_db(app, create=False):
-    """Helper you can call in app.py to create tables and seed test data."""
     with app.app_context():
         if create:
             db.drop_all()

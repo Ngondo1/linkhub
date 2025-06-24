@@ -235,61 +235,90 @@
 
 
 <script>
-  let map, marker;
+let map, userMarker, clusterer, technicianMarkers = [];
 
-  function initMap() {
-    const defaultPos = { lat: -1.286389, lng: 36.817223 }; // Nairobi
-    map = new google.maps.Map(document.getElementById("map"), {
-      center: defaultPos,
-      zoom: 12,
-    });
+/* -------------- 1. INITIALISE MAP ------------------ */
+function initMap() {
+  const nairobi = { lat: -1.286389, lng: 36.817223 };
 
-    marker = new google.maps.Marker({
-      position: defaultPos,
-      map: map,
-      draggable: true,
-      title: "Drag to refine your location"
-    });
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: nairobi,
+    zoom: 11,
+  });
 
-    google.maps.event.addListener(marker, 'dragend', function () {
-      updateLocationInput(marker.getPosition());
-    });
+  loadTechnicians();               // ⬅ draw markers immediately
+  map.addListener("idle", loadTechnicians);  // ⬅ reload when user pans / zooms
+}
 
-    updateLocationInput(defaultPos);
+/* -------------- 2. LOAD TECHNICIANS ---------------- */
+function loadTechnicians() {
+  // Clear old markers
+  technicianMarkers.forEach(m => m.setMap(null));
+  technicianMarkers = [];
+
+  fetch("/api/map/technicians")
+    .then(r => r.json())
+    .then(list => {
+      list.forEach(t => {
+        const m = new google.maps.Marker({
+          position: { lat: t.lat, lng: t.lng },
+          title: `${t.name} – ${t.specialty}`,
+          map: map
+        });
+
+        const info = new google.maps.InfoWindow({
+          content: `<strong>${t.name}</strong><br>${t.specialty}`
+        });
+        m.addListener("click", () => info.open(map, m));
+
+        technicianMarkers.push(m);
+      });
+
+      // Cluster them
+      if (clusterer) clusterer.clearMarkers();
+      clusterer = new MarkerClusterer(map, technicianMarkers, {
+        imagePath:
+          "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m"
+      });
+    })
+    .catch(console.error);
+}
+
+/* -------------- 3. SEND LIVE LOCATION -------------- */
+// call this when a technician clicks “Update My Location”
+function sendLiveLocation(techId) {
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported");
+    return;
   }
-
-  function detectLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          map.setCenter(pos);
-          marker.setPosition(pos);
-          updateLocationInput(pos);
-        },
-        function () {
-          alert("Geolocation failed or was denied.");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  }
-
-  function updateLocationInput(position) {
-    const lat = position.lat;
-    const lng = position.lng;
-    document.getElementById("location").value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const payload = {
+      id: techId,
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude
+    };
+    fetch("/api/technicians/location", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(() => {
+      alert("Location sent!");
+      loadTechnicians();           // reload map after update
+    })
+    .catch(err => alert("Error:" + err));
+  });
+}
 </script>
 
 <!-- Google Maps API Key: Replace YOUR_API_KEY with a real one -->
 <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtwHYW_qjndhYw224ZeHi9ZSjn9MCfBUg&callback=initMap">
 </script>
+<!-- put this just above your Maps <script> tag -->
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+
 
 <style>
 .hero-form {
