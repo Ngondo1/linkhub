@@ -228,3 +228,7 @@ def subscribe():
         return redirect(url_for("routes.subscribe"))
 
     return render_template("subscription.html")
+
+@routes_bp.route("/healthz")
+def health_check():
+    return "OK", 200

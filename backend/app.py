@@ -44,9 +44,9 @@ else:
     print(f"    HOST: {db_host}:{db_port}")
     print(f"    NAME: {db_name}")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    f"mysql+pymysql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
+
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SESSION_TYPE"] = "filesystem"  # simple on-disk sessions
 
