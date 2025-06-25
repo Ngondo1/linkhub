@@ -6,3 +6,4 @@ Flask-Session
 python-dotenv
 PyMySQL          # ← NEW, SQLAlchemy’s MySQL driver
 gunicorn
+psycopg2-binary

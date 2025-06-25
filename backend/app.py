@@ -29,22 +29,10 @@ app.secret_key = os.getenv("SECRET_KEY", "ggj")  # fallback if missing
 # -------------------------------------------------------------------
 # 3. Database config (MySQL via PyMySQL)
 # -------------------------------------------------------------------
-db_username = os.getenv("MYSQL_USER")
-db_password = os.getenv("MYSQL_PASSWORD", "kimemia04")  # default for dev
-db_host     = os.getenv("MYSQL_HOST")
-db_port     = os.getenv("MYSQL_PORT", "3306")
-db_name     = os.getenv("MYSQL_DATABASE")
-
-# Simple check in the console
-if not all([db_username, db_password, db_host, db_port, db_name]):
-    print("❗  One or more DB env variables are missing.")
-else:
-    print("🔌  DB connection details:")
-    print(f"    USER: {db_username}")
-    print(f"    HOST: {db_host}:{db_port}")
-    print(f"    NAME: {db_name}")
+print("🔌  Using SQLAlchemy DB URL from DATABASE_URL")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
+
 
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -53,7 +41,7 @@ app.config["SESSION_TYPE"] = "filesystem"  # simple on-disk sessions
 # -------------------------------------------------------------------
 # 4. Initialise extensions
 # -------------------------------------------------------------------
-from models import db  # local import to avoid circular reference
+
 db.init_app(app)
 migrate = Migrate(app, db)
 Session(app)
