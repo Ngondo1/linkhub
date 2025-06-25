@@ -111,7 +111,8 @@ class Employee(db.Model):
 
     skills = db.Column(db.Text)
     years_of_experience = db.Column(db.Integer)
-    expected_salary = db.Column(db.Integer)
+    expected_rate = db.Column(db.Integer)  # Amount per job
+    rate_unit = db.Column(db.String(50), default="per job")  # e.g., "per job", "per hour"
     availability = db.Column(db.Enum(Availability))
     preferred_job_types = db.Column(db.String(150))
     portfolio_url = db.Column(db.String(255))
@@ -124,7 +125,6 @@ class Employee(db.Model):
 
     def __repr__(self):
         return f"<Employee {self.id} – {self.user.name if self.user else ''}>"
-
 
 class Job(db.Model):
     __tablename__ = "jobs"

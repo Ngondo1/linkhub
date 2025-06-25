@@ -9,6 +9,31 @@ from datetime import datetime
 import os
 
 routes_bp = Blueprint("routes", __name__)
+#user route
+@routes_bp.route("/add-user", methods=["POST"])
+def add_user():
+    data = request.form if request.form else request.get_json()
+    try:
+        user = User(
+            name=data.get("name"),
+            age=data.get("age"),
+            phone_no=data.get("phone_no"),
+            gender=data.get("gender"),
+            county=data.get("county"),
+            town=data.get("town"),
+            level_of_education=data.get("level_of_education"),
+            profession=data.get("profession"),
+            marital_status=data.get("marital_status"),
+            religion=data.get("religion"),
+            ethnicity=data.get("ethnicity"),
+            description=data.get("description")
+        )
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"status": "success", "user_id": user.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 400
 
 # 1. SEARCH WORKERS BASED ON FILTERS
 @routes_bp.route("/search")
@@ -36,64 +61,82 @@ def match_worker(worker_id):
     return redirect(url_for("routes.search"))
 
 # 3. ADD WORKER (GET & POST)
-@routes_bp.route("/add-worker", methods=["GET", "POST"])
+@routes_bp.route("/add-worker", methods=["POST"])
 def add_worker():
-    if request.method == "POST":
+    data = request.form if request.form else request.get_json()
+    try:
+        # Create User
         user = User(
-            name=request.form["name"],
-            phone_no=request.form["phone_no"],
-            gender=request.form["gender"],
-            county=request.form["county"],
-            town=request.form["town"],
-            level_of_education=request.form["education"],
-            profession=request.form["profession"],
-            marital_status=request.form["marital_status"],
-            description=request.form["description"]
+            name=data.get("name"),
+            age=data.get("age"),
+            phone_no=data.get("phone_no"),
+            gender=data.get("gender"),
+            county=data.get("county"),
+            town=data.get("town"),
+            level_of_education=data.get("level_of_education"),
+            profession=data.get("profession"),
+            marital_status=data.get("marital_status"),
+            religion=data.get("religion"),
+            ethnicity=data.get("ethnicity"),
+            description=data.get("description")
         )
         db.session.add(user)
-        db.session.flush()  # get user.id before commit
+        db.session.flush()  # get user.id
 
+        # Create Employee
         employee = Employee(
             id=user.id,
-            skills=request.form["skills"],
-            years_of_experience=request.form["experience"],
-            expected_salary=request.form["salary"],
-            availability=request.form["availability"]
+            role=data.get("role", "technician"),
+            specialty=data.get("specialty"),
+            latitude=data.get("latitude"),
+            longitude=data.get("longitude"),
+            skills=data.get("skills"),
+            years_of_experience=data.get("years_of_experience"),
+            expected_rate=data.get("expected_rate"),
+            rate_unit=data.get("rate_unit", "per job"),
+            availability=data.get("availability"),
+            preferred_job_types=data.get("preferred_job_types"),
+            portfolio_url=data.get("portfolio_url")
         )
         db.session.add(employee)
         db.session.commit()
-        flash("Worker added successfully!")
-        return redirect(url_for("routes.add_worker"))
-
-    return render_template("add_worker.html")
-
-# 4. ADD EMPLOYER
-@routes_bp.route("/add-employer", methods=["GET", "POST"])
+        return jsonify({"status": "success", "user_id": user.id, "employee_id": employee.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 400  
+    # 4. ADD EMPLOYER
+@routes_bp.route("/add-employer", methods=["POST"])
 def add_employer():
-    if request.method == "POST":
+    data = request.form if request.form else request.get_json()
+    try:
+        # Create User
         user = User(
-            name=request.form["name"],
-            phone_no=request.form["phone_no"],
-            county=request.form["county"],
-            town=request.form["town"]
+            name=data.get("name"),
+            phone_no=data.get("phone_no"),
+            county=data.get("county"),
+            town=data.get("town")
         )
         db.session.add(user)
-        db.session.flush()
+        db.session.flush()  # get user.id
 
+        # Create Employer
         employer = Employer(
             id=user.id,
-            company_name=request.form["company_name"],
-            company_email=request.form["email"],
-            company_phone=request.form["phone"],
-            company_location=request.form["location"]
+            company_name=data.get("company_name"),
+            business_type_id=data.get("business_type_id"),
+            registration_number=data.get("registration_number"),
+            company_email=data.get("company_email"),
+            company_phone=data.get("company_phone"),
+            company_location=data.get("company_location"),
+            logo_url=data.get("logo_url"),
+            verified=data.get("verified", False)
         )
         db.session.add(employer)
         db.session.commit()
-        flash("Employer added successfully!")
-        return redirect(url_for("routes.add_employer"))
-
-    return render_template("add_employer.html")
-
+        return jsonify({"status": "success", "user_id": user.id, "employer_id": employer.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 400
 # 5. ADD JOB LISTING
 @routes_bp.route("/add-job", methods=["GET", "POST"])
 def add_job():
