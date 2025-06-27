@@ -74,6 +74,29 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
+
+      </form>
+
+  {% for message in get_flashed_messages() %}
+    <div class="message">{{ message }}</div>
+  {% endfor %}
+
+  <a href="/" style="display:block;text-align:center;margin-top:22px;">
+    <button type="button" style="
+      background: #00796b;
+      color: #fff;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: background 0.2s;
+    " onmouseover="this.style.background='#005a4f'" onmouseout="this.style.background='#00796b'">
+      Back to Home
+    </button>
+  </a>
   </div>
 </body>
 </html>

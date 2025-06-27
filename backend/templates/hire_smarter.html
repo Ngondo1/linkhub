@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Hire Smarter — LinkHub</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Add a new employer to LinkHub." />
+  <style>
+    body {
+      background: #f9faf9;
+      font-family: 'Inter', Arial, sans-serif;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    .hire-smarter-container {
+      max-width: 520px;
+      margin: 60px auto 0;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      padding: 40px 30px 30px;
+    }
+    h1 {
+      color: #006b62;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    p {
+      color: #444;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    form label {
+      display: block;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    form input, form select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      background: #f8f8f8;
+    }
+    button {
+      background: #ff9800;
+      color: #fff;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #e67d00;
+    }
+    .success, .error {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .success { color: #006b62; }
+    .error { color: #c0392b; }
+    @media (max-width: 600px) {
+      .hire-smarter-container { padding: 24px 8px; }
+      h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hire-smarter-container">
+    <h1>Hire Smarter</h1>
+    <p>Welcome to the Hire Smarter page. Here you can add a new employer to your platform.</p>
+    <form id="employerForm" method="post" action="/add-employer" autocomplete="off">
+      <label for="name">Contact Name</label>
+      <input type="text" id="name" name="name" required placeholder="e.g. Jane Doe">
+
+      <label for="phone_no">Contact Phone</label>
+      <input type="text" id="phone_no" name="phone_no" required placeholder="e.g. 0712345678">
+
+      <label for="county">County</label>
+      <input type="text" id="county" name="county" required placeholder="e.g. Nairobi">
+
+      <label for="town">Town</label>
+      <input type="text" id="town" name="town" required placeholder="e.g. Westlands">
+
+      <label for="company_name">Company Name</label>
+      <input type="text" id="company_name" name="company_name" required placeholder="e.g. BuildCo Ltd">
+
+      <label for="business_type_id">Business Type</label>
+      <select id="business_type_id" name="business_type_id" required>
+        <option value="" hidden selected>Select type</option>
+        <option value="1">Construction</option>
+        <option value="2">Repair</option>
+        <option value="3">Logistics</option>
+        <option value="4">Other</option>
+      </select>
+
+      <label for="registration_number">Registration Number</label>
+      <input type="text" id="registration_number" name="registration_number" placeholder="e.g. C123456">
+
+      <label for="company_email">Company Email</label>
+      <input type="email" id="company_email" name="company_email" placeholder="e.g. info@buildco.co.ke">
+
+      <label for="company_phone">Company Phone</label>
+      <input type="text" id="company_phone" name="company_phone" placeholder="e.g. 0712345678">
+
+      <label for="company_location">Company Location</label>
+      <input type="text" id="company_location" name="company_location" placeholder="e.g. Nairobi, Kenya">
+
+      <label for="logo_url">Logo URL</label>
+      <input type="url" id="logo_url" name="logo_url" placeholder="https://...">
+
+      <button type="submit">Add Employer</button>
+      <div id="formMsg"></div>
+    </form>
+  </div>
+  <script>
+    // Optional: AJAX form submission for a better UX
+    document.getElementById('employerForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      const msg = document.getElementById('formMsg');
+      msg.textContent = '';
+      msg.className = '';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: data
+        });
+        const result = await res.json();
+        if (res.ok && result.status === "success") {
+          msg.textContent = "Employer added successfully!";
+          msg.className = "success";
+          form.reset();
+        } else {
+          msg.textContent = result.message || "Error adding employer.";
+          msg.className = "error";
+        }
+      } catch (err) {
+        msg.textContent = "Network error. Please try again.";
+        msg.className = "error";
+      }
+    };
+  </script>
+</body>
+</html>

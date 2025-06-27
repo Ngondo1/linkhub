@@ -100,10 +100,12 @@ def add_worker():
         )
         db.session.add(employee)
         db.session.commit()
-        return jsonify({"status": "success", "user_id": user.id, "employee_id": employee.id}), 201
+        flash("Worker added successfully!", "success")
+        return redirect(url_for("routes.add_worker_page"))
     except Exception as e:
         db.session.rollback()
-        return jsonify({"status": "error", "message": str(e)}), 400  
+        flash(f"Error: {str(e)}", "error")
+        return redirect(url_for("routes.add_worker_page")) 
     # 4. ADD EMPLOYER
 @routes_bp.route("/add-employer", methods=["POST"])
 def add_employer():
@@ -275,3 +277,21 @@ def subscribe():
 @routes_bp.route("/healthz")
 def health_check():
     return "OK", 200
+
+
+# ...existing code...
+
+# Serve the add_worker.html page
+@routes_bp.route("/add_worker", methods=["GET"])
+def add_worker_page():
+    return render_template("add_worker.html")
+
+# Serve the results.html page
+@routes_bp.route("/results", methods=["GET"])
+def results_page():
+    return render_template("results.html")
+
+# Serve the hire_smarter.html page (if you want it via Flask, not static)
+@routes_bp.route("/hire_smarter", methods=["GET"])
+def hire_smarter_page():
+    return render_template("hire_smarter.html")

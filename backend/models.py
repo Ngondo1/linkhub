@@ -93,6 +93,10 @@ class Employer(db.Model):
 
     user = db.relationship("User", back_populates="employer")
     jobs = db.relationship("Job", back_populates="employer", cascade="all, delete-orphan")
+    
+    @property
+    def full_name(self):
+        return self.user.name if self.user else ""
 
     def __repr__(self):
         return f"<Employer {self.company_name}>"
@@ -125,6 +129,9 @@ class Employee(db.Model):
 
     def __repr__(self):
         return f"<Employee {self.id} – {self.user.name if self.user else ''}>"
+    @property
+    def full_name(self):
+        return self.user.name if self.user else ""
 
 class Job(db.Model):
     __tablename__ = "jobs"
