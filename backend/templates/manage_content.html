@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Content</title>
+ <style>
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 2.5rem auto;
+        background: #fff;
+        padding: 2.5rem 2rem 2rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(80,80,160,0.10);
+    }
+    h2 {
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        color: #2d3748;
+        font-weight: 700;
+        text-align: center;
+        text-shadow: 0 2px 8px #e0e7ff;
+    }
+    .top-actions {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+    .btn {
+        padding: 0.45rem 1.2rem;
+        background: #ff9800;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: background 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn:hover {
+        background: #6366f1;
+        color: #fff;
+    }
+    .btn-sm {
+        padding: 0.3rem 0.9rem;
+        font-size: 0.97rem;
+        margin-right: 0.2rem;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        background: #fff;
+        font-size: 1rem;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    th, td {
+        padding: 1rem 0.7rem;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    th {
+        background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%);
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border: none;
+    }
+     tr:nth-child(even) {
+        background: #f7f7f7;
+    }
+    tr:hover {
+        background: #ffe0b2;
+        transition: background 0.2s;
+    }
+    @media (max-width: 900px) {
+        .container {
+            padding: 1rem;
+        }
+        .table, thead, tbody, th, td, tr {
+            display: block;
+        }
+        th, td {
+            padding: 0.7rem 0.5rem;
+        }
+        tr {
+            margin-bottom: 1rem;
+        }
+        .top-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+    }
+</style>
+
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Manage Content</h2>
+    <div class="top-actions">
+        <a href="#" class="btn">Add New Content</a>
+        <a href="{{ url_for('routes.manage_users') }}" class="btn">Manage Users</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for content in contents %}
+            <tr>
+                <td>{{ content.title }}</td>
+                <td>{{ content.author.name if content.author else "N/A" }}</td>
+                <td>{{ content.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <a href="#" class="btn btn-sm" style="background:#2196f3;">Edit</a>
+                    <a href="#" class="btn btn-sm" style="background:#f44336;">Delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4">No content found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    // Example: highlight row on hover
+    document.querySelectorAll('tbody tr').forEach(row => {
+        row.addEventListener('mouseenter', () => row.style.background = '#ffe0b2');
+        row.addEventListener('mouseleave', () => row.style.background = '');
+    });
+</script>
+</body>
+</html>

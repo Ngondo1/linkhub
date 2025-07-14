@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Management Panel</title>
+   <style>
+    body {
+        background: #f8f9fa;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 1100px;
+        margin: 2rem auto;
+        background: #fff;
+        padding: 2.5rem 2rem 2rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    h1 {
+        margin-top: 0;
+        margin-bottom: 2rem;
+        font-size: 2.2rem;
+        color: #333;
+        letter-spacing: 1px;
+    }
+    h2 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+        color: #444;
+    }
+    .nav {
+        margin: 1.5rem 0 2rem 0;
+        display: flex;
+        gap: 1rem;
+    }
+    .nav a {
+        text-decoration: none;
+        color: #ff9800;
+        font-weight: 600;
+        padding: 0.4rem 1.1rem;
+        border-radius: 6px;
+        transition: background 0.2s, color 0.2s;
+        background: #fff;
+        border: 1px solid #ff9800;
+    }
+    .nav a.active, .nav a:hover {
+        color: #fff;
+        background: #ff9800;
+    }
+    .top-actions {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+    }
+    .btn {
+        padding: 0.45rem 1.2rem;
+        background: #ff9800;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: background 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn:hover {
+        background: #e68900;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        background: #fff;
+        font-size: 1rem;
+    }
+    th, td {
+        padding: 0.85rem 0.7rem;
+        border: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    th {
+        background: #ff9800;
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    tr:nth-child(even) {
+        background: #f7f7f7;
+    }
+    tr:hover {
+        background: #ffe0b2;
+        transition: background 0.2s;
+    }
+    .crud-btns a, .crud-btns form {
+        display: inline;
+    }
+    .crud-btns .btn {
+        margin-right: 0.3rem;
+        padding: 0.3rem 0.9rem;
+        font-size: 0.97rem;
+    }
+    @media (max-width: 900px) {
+        .container {
+            padding: 1rem;
+        }
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+        th, td {
+            padding: 0.7rem 0.5rem;
+        }
+        th {
+            background: #ff9800;
+            color: #fff;
+        }
+        tr {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Management Panel</h1>
+        <div class="nav">
+            <a href="{{ url_for('routes.manage_users') }}" class="{% if active == 'users' %}active{% endif %}">Users</a>
+            <a href="{{ url_for('routes.retrieve_workers') }}" class="{% if active == 'workers' %}active{% endif %}">Workers</a>
+            <a href="{{ url_for('routes.retrieve_employers') }}" class="{% if active == 'employers' %}active{% endif %}">Employers</a>
+            <a href="{{ url_for('routes.retrieve_jobs') }}" class="{% if active == 'jobs' %}active{% endif %}">Jobs</a>
+            <a href="{{ url_for('routes.retrieve_matches') }}" class="{% if active == 'matches' %}active{% endif %}">Matches</a>
+        </div>
+        <div class="top-actions">
+            <a href="{{ url_for('routes.add_user') }}" class="btn">Home </a>
+            <a href="{{ url_for('routes.admin_dashboard') }}" class="btn">Back to Dashboard</a>
+        </div>
+        {% if active == 'users' %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Username</th><th>Name</th><th>Phone</th><th>Role</th><th>County</th><th>Town</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.phone_no }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.county }}</td>
+                    <td>{{ user.town }}</td>
+                    <td class="crud-btns">
+                        <a href="{{ url_for('routes.edit_user', user_id=user.id) }}" class="btn">Edit</a>
+                        <form action="{{ url_for('routes.delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% elif active == 'workers' %}
+        <h2>Workers</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Name</th><th>Specialty</th><th>Phone</th><th>Skills</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for worker in workers %}
+                <tr>
+                    <td>{{ worker.id }}</td>
+                    <td>{{ worker.user.name if worker.user else '' }}</td>
+                    <td>{{ worker.specialty }}</td>
+                    <td>{{ worker.user.phone_no if worker.user else '' }}</td>
+                    <td>{{ worker.skills }}</td>
+                    <td class="crud-btns">
+                        <!-- Add edit/delete links for workers if you have those routes -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% elif active == 'employers' %}
+        <h2>Employers</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Company Name</th><th>Email</th><th>Phone</th><th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employer in employers %}
+                <tr>
+                    <td>{{ employer.id }}</td>
+                    <td>{{ employer.company_name }}</td>
+                    <td>{{ employer.company_email }}</td>
+                    <td>{{ employer.company_phone }}</td>
+                    <td>{{ employer.company_location }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% elif active == 'jobs' %}
+        <h2>Jobs</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Title</th><th>Description</th><th>Location</th><th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{ job.id }}</td>
+                    <td>{{ job.job_title }}</td>
+                    <td>{{ job.job_description }}</td>
+                    <td>{{ job.job_location }}</td>
+                    <td>{{ job.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% elif active == 'matches' %}
+        <h2>Matches</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Job ID</th><th>Employee ID</th><th>Matched At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for match in matches %}
+                <tr>
+                    <td>{{ match.id }}</td>
+                    <td>{{ match.job_id }}</td>
+                    <td>{{ match.employee_id }}</td>
+                    <td>{{ match.matched_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>LinkHub — Kenya’s Honest Talent Hub (Beta)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description"
+        content="LinkHub is a new Kenyan platform connecting blue-collar talent to real jobs. Built by Ngondo Kimemia. Public beta now open." />
+
+  <!-- preconnect for Google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"/>
+
+  <style>
+  /* ========== COLOUR & TYPO SYSTEM =================================== */
+  :root{
+    --teal-deep:#004d47;
+    --teal-mid:#006b62;
+    --ivory:#f9faf9;
+    --charcoal:#202124;
+    --orange:#ff9800;
+    --orange-dark:#e67d00;
+    --card-bg:rgba(255,255,255,.06);
+    --card-bg-hover:rgba(255,255,255,.12);
+    --radius:12px;
+    --trans:.3s ease;
+    --bg-dark:#1c1c1c;
+    --text-light:#f1f1f1;
+  }
+  html{scroll-behavior:smooth;font-size:100%}
+  @media(min-width:1440px){html{font-size:110%}}
+  @media(max-width:600px){html{font-size:93%}}
+  *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+  body,button,input,textarea{
+    font-family:'Inter',Arial,sans-serif;
+    font-size:1rem;line-height:1.6;color:var(--text-light);
+    background:var(--bg-dark);
+  }
+  h2,h3{font-weight:900;color:var(--teal-deep)}
+  p{color:var(--text-light);margin-bottom:20px}
+  a{color:var(--orange);text-decoration:none;transition:color .3s ease}
+
+  /* ========== SKIP LINK ============================================= */
+  .skip{position:absolute;left:-999px;top:auto}
+  .skip:focus{left:8px;top:8px;background:#000;color:#fff;padding:8px;
+              border-radius:6px;z-index:10000}
+
+  /* ========== NAV BAR ============================================== */
+  header{
+    background:var(--teal-deep);
+    padding:22px 8%;
+    display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:1000
+  }
+  .logo{font-size:1.9rem;font-weight:900;color:#fff;margin:0}
+  nav{display:flex;gap:32px}
+  nav a{font-weight:600;position:relative}
+  nav a::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;
+               background:var(--orange);transition:var(--trans)}
+  nav a:hover::after,nav a:focus-visible::after{width:100%}
+  #burger{display:none;font-size:1.9rem;color:#fff;background:none;border:none}
+  @media(max-width:768px){
+    nav{display:none;flex-direction:column;gap:18px;background:var(--teal-deep);
+        position:absolute;top:70px;right:8%;padding:24px 30px;border-radius:var(--radius)}
+    nav.open{display:flex}
+    #burger{display:block}
+    nav a{padding-block:6px}
+  }
+
+  /* ========== HERO ================================================== */
+  #home{scroll-margin-top:80px}
+  .hero{
+    min-height:95vh;height:auto;
+    padding:4rem 8% 2rem;
+    display:flex;justify-content:center;align-items:center;text-align:center;
+    background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6));
+    color:#fff;
+  }
+  .hero-content{max-width:1000px;width:100%}
+  .hero h1{position:absolute;clip:rect(1px,1px,1px,1px)} /* visually-hidden */
+  .hero h2{font-size:clamp(2.5rem,4vw+1rem,4rem);font-weight:900;line-height:1.15;margin-bottom:1.5rem}
+  .hero p{font-size:clamp(1.1rem,1vw+.8rem,1.35rem);max-width:800px;margin:0 auto;color:#e8e8e8}
+  @media(max-width:480px){
+    .hero{padding:90px 6% 60px}
+    .hero h2{font-size:clamp(1.8rem,7vw,2.4rem)}
+    .hero p{font-size:clamp(1rem,4.5vw,1.15rem);margin-bottom:1.8rem}
+  }
+
+  /* ==== animations */
+  @keyframes riseIn{0%{transform:translateY(50px);opacity:0}
+                    100%{transform:translateY(0);opacity:1}}
+  @keyframes zoomIn{0%{transform:scale(.92);opacity:0}
+                    100%{transform:scale(1);opacity:1}}
+  .animate-rise{animation:riseIn .9s ease-out forwards}
+  .animate-zoom{animation:zoomIn 1.2s ease-out .3s forwards}
+
+  /* ========== PILLARS / SERVICES =================================== */
+  .pillars{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;background:#333;padding:70px 6%}
+  .pillar{flex:1 1 300px;max-width:480px;background:var(--card-bg);padding:46px 28px;
+          border-radius:var(--radius);text-align:center;box-shadow:0 6px 10px rgba(0,0,0,.25);
+          transition:var(--trans);backdrop-filter:blur(3px)}
+  .pillar:hover{background:var(--card-bg-hover);transform:translateY(-6px)}
+  .pillar h3{font-size:1.5rem;color:var(--orange);margin-bottom:18px}
+  .pillar p{font-size:1rem;line-height:1.8;margin-bottom:26px}
+  .btn{display:inline-block;background:var(--orange);color:#fff;padding:12px 28px;border-radius:8px;font-weight:600;transition:background var(--trans)}
+  .btn:hover{background:var(--orange-dark)}
+  @media(max-width:768px){.pillars{flex-direction:column;align-items:center}}
+
+  /* ========== HOW IT WORKS timeline ================================ */
+  .timeline{background:#f0f2f5;color:var(--charcoal);text-align:center;padding:90px 8%}
+  .timeline h2{font-size:2.2rem;margin-bottom:50px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:40px;max-width:1100px;margin:auto}
+  .step{background:#fff;border-radius:var(--radius);padding:36px 28px;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:var(--trans)}
+  .step:hover{transform:translateY(-6px)}
+  .step span{display:block;font-size:46px;font-weight:900;color:var(--teal-deep);margin-bottom:14px}
+  .step p{color: var(--charcoal);line-height:1.7;}
+  .steps .step p {color: var(--charcoal);
+  font-weight:500;}
+  /* ========== INVITE =============================================== */
+  .invite{background:var(--teal-deep);text-align:center;padding:70px 8%}
+  .invite h2{font-size:1.9rem;margin-bottom:18px}
+  .invite p{font-size:1.05rem;max-width:760px;margin:auto;line-height:1.8;color:#e0e0e0}
+
+  /* ========== ABOUT ================================================= */
+#about{background:#fffefc;color:#1a1a1a;text-align:center;padding:100px 8%}
+#about h2{font-size:2.1rem;margin-bottom:24px;color:#003a2b}
+#about p{font-size:1.1rem;max-width:840px;margin:auto;line-height:1.85;color:#333}
+#about strong{color:#ff7a00}
+
+
+  /* ========== FAQ =================================================== */
+  .faq{background:#1c1c1c;color:#fff;text-align:center;padding:90px 8%}
+  .faq h2{font-size:1.9rem;margin-bottom:40px}
+  .faq-item{max-width:900px;margin:0 auto 34px;text-align:left}
+  .faq-item h3{font-size:1.15rem;color:var(--orange);margin-bottom:8px}
+  .faq-item p{font-size:.97rem;color:#ddd;line-height:1.8}
+
+  /* ========== CONTACT ============================================== */
+  #contact{background:var(--teal-mid);padding:100px 8% 110px;text-align:center}
+  #contact h2{font-size:1.95rem;margin-bottom:32px}
+  form{max-width:500px;margin:auto;text-align:left}
+  label{display:block;margin-bottom:6px;font-weight:600}
+  input,textarea{width:100%;padding:14px;margin-bottom:22px;border-radius:8px;border:none;font:inherit}
+
+  /* buttons */
+  button{cursor:pointer;background:var(--orange);color:#fff;border:none;padding:12px 26px;border-radius:var(--radius);font-weight:600;transition:background var(--trans)}
+  button:hover{background:var(--orange-dark)}
+
+  /* focus rings */
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:3px solid var(--orange);outline-offset:2px}
+
+  /* ========== FOOTER =============================================== */
+  footer{background:#002521;text-align:center;padding:26px 0;font-size:.9rem;color:#ccc}
+
+  /* ========== LIGHT THEME toggle =================================== */
+  .light{--bg-dark:#fafafa;--text-light:#222;--card-bg:rgba(0,0,0,.03);--card-bg-hover:rgba(0,0,0,.08)}
+  .light body{background:var(--bg-dark);color:var(--text-light)}
+  .light p{color:#333}
+  .light header,.light footer{background:#e0e0e0;color:#222}
+  </style>
+</head>
+<body>
+
+  <!-- Skip link for screen-readers -->
+  <a href="#home" class="skip">Skip to main content</a>
+
+  <!-- NAV -->
+  <header>
+    <p class="logo">LinkHub</p>
+    <button id="burger" aria-label="Toggle navigation">☰</button>
+    <nav id="nav" aria-label="Primary navigation">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <!-- Dark / light toggle -->
+    <button id="mode" aria-label="Toggle dark / light">🌓</button>
+  </header>
+
+  <main>
+
+{% if user and user.role == "employer" %}
+  <section class="hero-form-card" style="margin: 2rem auto;">
+    <h2>Post a New Job</h2>
+    <form action="/add-job" method="POST" class="job-request-form" style="display: grid; gap: 1rem;">
+      <div>
+        <label for="jobCategory">Job Category</label>
+        <input type="text" id="jobCategory" name="jobCategory" required>
+      </div>
+      <div>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+      </div>
+      <div>
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" required>
+      </div>
+      <div>
+        <label for="salary_range">Salary Range</label>
+        <input type="text" id="salary_range" name="salary_range" placeholder="e.g. 20,000 - 30,000 KES">
+      </div>
+      <div>
+        <label for="employment_type">Employment Type</label>
+        <select id="employment_type" name="employment_type" required>
+          <option value="">Select type...</option>
+          <option value="full_time">Full Time</option>
+          <option value="part_time">Part Time</option>
+          <option value="contract">Contract</option>
+          <option value="temporary">Temporary</option>
+          <option value="casual">Casual</option>
+        </select>
+      </div>
+      <button type="submit">Post Job</button>
+    </form>
+  </section>
+{% endif %}
+print("User for index:", user)
+
+
+<script>
+let map, userMarker, clusterer, technicianMarkers = [];
+
+/* -------------- 1. INITIALISE MAP ------------------ */
+function initMap() {
+  const nairobi = { lat: -1.286389, lng: 36.817223 };
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: nairobi,
+    zoom: 11,
+  });
+
+  // Try to detect user location on map load
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        map.setCenter({lat, lng});
+        if (window.userMarker) window.userMarker.setMap(null);
+        window.userMarker = new google.maps.Marker({
+          position: {lat, lng},
+          map: map,
+          title: "Your Location",
+          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+        // Also update the input field
+        const locationInput = document.getElementById("location");
+        if (locationInput) locationInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      },
+      function (err) {
+        // Do nothing, keep Nairobi as default
+      }
+    );
+  }
+
+  loadTechnicians();
+  map.addListener("idle", loadTechnicians);
+}
+/* -------------- 2. LOAD TECHNICIANS ---------------- */
+function loadTechnicians() {
+  // Clear old markers
+  technicianMarkers.forEach(m => m.setMap(null));
+  technicianMarkers = [];
+
+  fetch("/api/map/technicians")
+    .then(r => r.json())
+    .then(list => {
+      list.forEach(t => {
+        const m = new google.maps.Marker({
+          position: { lat: t.lat, lng: t.lng },
+          title: `${t.name} – ${t.specialty}`,
+          map: map
+        });
+
+        const info = new google.maps.InfoWindow({
+          content: `<strong>${t.name}</strong><br>${t.specialty}`
+        });
+        m.addListener("click", () => info.open(map, m));
+
+        technicianMarkers.push(m);
+      });
+
+      // Cluster them
+      if (clusterer) clusterer.clearMarkers();
+      clusterer = new MarkerClusterer(map, technicianMarkers, {
+        imagePath:
+          "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m"
+      });
+    })
+    .catch(console.error);
+}
+
+/* -------------- 3. SEND LIVE LOCATION -------------- */
+// call this when a technician clicks “Update My Location”
+function sendLiveLocation(techId) {
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported");
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const payload = {
+      id: techId,
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude
+    };
+    fetch("/api/technicians/location", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(() => {
+      alert("Location sent!");
+      loadTechnicians();           // reload map after update
+    })
+    .catch(err => alert("Error:" + err));
+  });
+}
+</script>
+
+<!-- Google Maps API Key: Replace YOUR_API_KEY with a real one -->
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtwHYW_qjndhYw224ZeHi9ZSjn9MCfBUg&callback=initMap">
+</script>
+<!-- put this just above your Maps <script> tag -->
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+
+
+<style>
+.hero-form {
+  background: var(--light-bg, #f8f9fa);
+  padding: 60px 8% 80px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-form-card {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  max-width: 520px;
+  width: 100%;
+  text-align: left;
+}
+
+.hero-form-card h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: var(--teal-deep, #004d45);
+  font-weight: 900;
+  text-align: center;
+}
+
+.hero-form-card p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.hero-form-card label {
+  display: block;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  color: #222;
+}
+
+.hero-form-card select,
+.hero-form-card textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  resize: vertical;
+  background: #fefefe;
+}
+
+.hero-form-card button {
+  background: var(--orange, #ff6600);
+  color: white;
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+.hero-form-card button:hover {
+  background: #e65c00;
+}
+
+@media (max-width: 480px) {
+  .hero-form-card {
+    padding: 30px 20px;
+  }
+
+  .hero-form-card h1 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+
+
+
+    <!-- HERO -->
+<section id="home" class="hero" aria-label="Introduction">
+  <h1 class="visually-hidden">LinkHub – Linking Kenyan Talent</h1>
+  <div class="hero-content">
+    <h2 class="animate-rise">Connecting Blue-Collar Talent to Opportunities</h2>
+    <p class="animate-zoom">
+      Built for Kenya, by Kenyans. 
+    </p>
+    <a href="/login" class="btn" style="margin-top: 2rem; font-size: 1.1rem;">
+      Log In / Sign Up
+    </a>
+  </div>
+</section>
+
+
+
+    <!-- HOW IT WORKS -->
+    <section class="timeline" aria-label="How LinkHub works">
+      <h2>How&nbsp;LinkHub&nbsp;Works</h2>
+      <div class="steps">
+        <div class="step"><span>1</span><p>Create your free profile — worker or employer.</p></div>
+        <div class="step"><span>2</span><p>Post or browse jobs; our queue ranks the best matches.</p></div>
+        <div class="step"><span>3</span><p>Chat, agree terms, and track progress in your dashboard.</p></div>
+        <div class="step"><span>4</span><p>Rate each other honestly, strengthening the whole community.</p></div>
+      </div>
+    </section> 
+
+
+<section class="subscribe-section" style="background:#fff;padding:50px 0;text-align:center;">
+  <h2 style="color:#006b62;margin-bottom:18px;">Stay Updated</h2>
+  <p style="color:#333;margin-bottom:24px;">Subscribe to get the latest updates, job alerts, and platform news.</p>
+  <a href="/subscribe" class="btn" style="padding:12px 24px;display:inline-block;">Go to Subscription Page</a>
+</section>
+
+  </main>
+
+  <footer>© 2025 LinkHub · Built by Ngondo Kimemia in Nairobi</footer>
+
+  <!-- Performance: lazy-load hero image -->
+  <script>
+    /* burger open / close */
+    const burger=document.getElementById('burger'),
+          nav=document.getElementById('nav');
+    burger.onclick=()=>nav.classList.toggle('open');
+    nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+
+    /* dark / light toggle */
+    const mode=document.getElementById('mode'),
+          root=document.documentElement;
+    mode.onclick=()=>{root.classList.toggle('light');
+      localStorage.setItem('theme',root.classList.contains('light')?'light':'dark');};
+    if(localStorage.getItem('theme')==='light'){root.classList.add('light');}
+
+    /* Lazy hero BG (WebP w/ fallback) */
+    if('IntersectionObserver'in window){
+      const hero=document.querySelector('.hero');
+      const setBg=()=>hero.style.background=
+        "linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),image-set('hero.webp' type('image/webp'), 'hero-africa.jpg')";
+      new IntersectionObserver(([e],o)=>{if(e.isIntersecting){setBg();o.disconnect();}})
+      .observe(hero);
+    }else{
+      /* fallback for very old browsers */
+      document.querySelector('.hero')
+        .style.background="linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),url('hero-africa.jpg') center/cover no-repeat";
+    }
+
+
+    function detectLocation() {
+  const locationInput = document.getElementById("location");
+  locationInput.value = "Loading your location...";
+  if (!navigator.geolocation) {
+    locationInput.value = "Geolocation not supported";
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    function (pos) {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      locationInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      // Center the map and add a marker for the user
+      if (window.map) {
+        window.map.setCenter({lat, lng});
+        if (window.userMarker) window.userMarker.setMap(null);
+        window.userMarker = new google.maps.Marker({
+          position: {lat, lng},
+          map: window.map,
+          title: "Your Location",
+          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+      }
+    },
+    function (err) {
+      locationInput.value = "Unable to retrieve your location";
+    }
+  );
+}
+  </script>
+</body>
+</html>

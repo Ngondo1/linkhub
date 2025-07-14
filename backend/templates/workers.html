@@ -1,0 +1,450 @@
+<!-- filepath: c:\Users\ngond\LINKHUB\backend\templates\workers.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worker Dashboard</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #222;
+        }
+        body {
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 48px auto;
+            background: #fff;
+            border-radius: 28px;
+            padding: 48px 38px 38px 38px;
+            box-shadow: 0 10px 40px rgba(80,80,160,0.15);
+        }
+        h1 {
+            color: #222;
+            margin-bottom: 32px;
+            font-size: 2.6rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 8px #e0e7ff;
+        }
+        .profile-section {
+            margin-bottom: 44px;
+            padding-bottom: 28px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-section h2 {
+            color: #6366f1;
+            font-size: 1.5rem;
+            margin-bottom: 22px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .profile-section form {
+            max-width: 440px;
+            width: 100%;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 32px 26px 22px 26px;
+            box-shadow: 0 2px 12px rgba(99,102,241,0.07);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-section label {
+            font-weight: 600;
+            color: #222;
+            margin-top: 10px;
+            margin-bottom: 3px;
+            align-self: flex-start;
+            font-size: 1.08rem;
+        }
+        .profile-section input, .profile-section select {
+            width: 100%;
+            padding: 13px 12px;
+            margin-bottom: 15px;
+            border: 1.5px solid #c7d2fe;
+            border-radius: 9px;
+            font-size: 1.08rem;
+            background: #fff;
+            transition: border 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 4px rgba(99,102,241,0.04);
+        }
+        .profile-section input:focus, .profile-section select:focus {
+            border-color: #6366f1;
+            outline: none;
+            background: #eef2ff;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+        }
+        .profile-actions {
+            margin-top: 18px;
+            text-align: center;
+            width: 100%;
+        }
+        .btn {
+            background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%);
+            color: #fff;
+            border: none;
+            padding: 14px 38px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.15rem;
+            box-shadow: 0 2px 10px rgba(99,102,241,0.10);
+            transition: background 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #6366f1 70%, #ff9800 100%);
+            box-shadow: 0 4px 18px rgba(99,102,241,0.18);
+        }
+        h2 {
+            margin-top: 40px;
+            color: #ff9800;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-align: left;
+        }
+        .jobs-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 28px;
+            background: #fff;
+            font-size: 1.08rem;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+        }
+        .jobs-table caption {
+            caption-side: top;
+            font-weight: 700;
+            color: #6366f1;
+            padding: 14px 0;
+            font-size: 1.18rem;
+            letter-spacing: 0.5px;
+        }
+        .jobs-table th, .jobs-table td {
+            padding: 19px 15px;
+            border-bottom: 1px solid #eaeaea;
+            text-align: left;
+        }
+        .jobs-table th {
+            background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.13rem;
+            letter-spacing: 0.6px;
+            border: none;
+        }
+        .jobs-table tr:nth-child(even) {
+            background: #f7f7f7;
+        }
+        .jobs-table tr:hover {
+            background: #ffe0b2;
+            transition: background 0.2s;
+        }
+        .no-jobs {
+            text-align: center;
+            color: #888;
+            font-size: 1.15rem;
+            padding: 32px 0;
+        }
+        .job-company {
+            font-weight: 700;
+            color: #6366f1;
+            font-size: 1.08rem;
+            letter-spacing: 0.5px;
+        }
+        .job-title {
+            font-weight: 700;
+            color: #222;
+            font-size: 1.08rem;
+        }
+        .job-type {
+            font-weight: 600;
+            color: #ff9800;
+            font-size: 1.02rem;
+        }
+        .job-salary {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.02rem;
+        }
+        .job-location {
+            font-weight: 600;
+            color: #6366f1;
+            font-size: 1.02rem;
+        }
+        .job-description {
+            color: #444;
+            font-size: 1.01rem;
+        }
+        .apply-btn {
+            background: linear-gradient(90deg, #6366f1 70%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.05rem;
+            box-shadow: 0 2px 10px rgba(99,102,241,0.10);
+            transition: background 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .apply-btn:hover {
+            background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%);
+            box-shadow: 0 4px 18px rgba(99,102,241,0.18);
+        }
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #e0e7ff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 8px;
+        }
+        /* Responsive styles */
+        @media (max-width: 900px) {
+            .container { padding: 1rem; }
+            .profile-section form { max-width: 100%; }
+            .jobs-table th, .jobs-table td { padding: 12px 7px; }
+        }
+        @media (max-width: 700px) {
+            .jobs-table th, .jobs-table td {
+                padding: 8px 4px;
+                font-size: 0.97rem;
+            }
+            .container {
+                padding: 8px;
+            }
+            h1 {
+                font-size: 1.7rem;
+            }
+            .profile-section form {
+                padding: 18px 8px 12px 8px;
+            }
+        }
+        /* Card style for job rows (optional) */
+        .jobs-table tr {
+            transition: box-shadow 0.2s;
+        }
+        .jobs-table tr:hover {
+            box-shadow: 0 2px 12px rgba(99,102,241,0.10);
+        }
+        /* Add more custom styles below for further polish */
+        .profile-section input[type="text"], .profile-section input[type="number"] {
+            background: #f3f4f6;
+        }
+        .profile-section input[type="text"]:focus, .profile-section input[type="number"]:focus {
+            background: #eef2ff;
+        }
+        .profile-section select {
+            background: #f3f4f6;
+        }
+        .profile-section select:focus {
+            background: #eef2ff;
+        }
+        .profile-section .btn {
+            margin-top: 10px;
+        }
+        .profile-section input[readonly] {
+            background: #e0e7ff;
+            color: #6366f1;
+        }
+        .profile-section input[type="text"]:disabled {
+            background: #e0e7ff;
+            color: #888;
+        }
+        /* Add a subtle border to the table */
+        .jobs-table {
+            border: 1.5px solid #e0e7ff;
+        }
+        /* Add a shadow to the profile section */
+        .profile-section {
+            box-shadow: 0 2px 14px rgba(99,102,241,0.07);
+        }
+        /* Add a little animation to the apply button */
+        .apply-btn:active {
+            transform: scale(0.97);
+        }
+        /* Add a highlight to the matching profession */
+        .matching-profession {
+            color: #6366f1;
+            font-weight: 700;
+            background: #eef2ff;
+            border-radius: 6px;
+            padding: 2px 8px;
+            margin-left: 6px;
+        }
+        /* Add a highlight to the total jobs */
+        .total-jobs {
+            color: #ff9800;
+            font-weight: 700;
+            background: #fff7e6;
+            border-radius: 6px;
+            padding: 2px 8px;
+            margin-left: 6px;
+        }
+        /* Add a fade-in animation for table rows */
+        @keyframes fadeInRow {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .jobs-table tr {
+            animation: fadeInRow 0.4s;
+        }
+        /* Add a sticky header to the table */
+        .jobs-table th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        /* Add a subtle gradient to the table background */
+        .jobs-table {
+            background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
+        }
+        /* Add a little spacing below the table */
+        .jobs-table {
+            margin-bottom: 32px;
+        }
+        /* Add a divider between profile and jobs */
+        .divider {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1 0%, #ff9800 100%);
+            margin: 38px 0 18px 0;
+            border-radius: 2px;
+        }
+        /* Add a floating effect to the container */
+        .container {
+            box-shadow: 0 10px 40px rgba(80,80,160,0.18);
+        }
+        /* Add a little animation to the container */
+        @keyframes fadeInContainer {
+            from { opacity: 0; transform: scale(0.98);}
+            to { opacity: 1; transform: scale(1);}
+        }
+        .container {
+            animation: fadeInContainer 0.7s;
+        }
+        /* Add a little animation to the profile section */
+        @keyframes fadeInProfile {
+            from { opacity: 0; transform: translateY(-10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .profile-section {
+            animation: fadeInProfile 0.6s;
+        }
+        /* Add a little animation to the jobs table */
+        @keyframes fadeInTable {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .jobs-table {
+            animation: fadeInTable 0.7s;
+        }
+        /* Add more polish as needed */
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome, {{ worker.name }}</h1>
+    <div class="profile-section">
+        <h2>Your Profile</h2>
+        <form method="POST" action="{{ url_for('routes.edit_user', user_id=worker.id) }}">
+            <label for="name">Name</label>
+            <input type="text" name="name" value="{{ worker.name }}" required>
+            <label for="phone_no">Phone Number</label>
+            <input type="text" name="phone_no" value="{{ worker.phone_no }}" required>
+            <label for="county">County</label>
+            <input type="text" name="county" value="{{ worker.county }}">
+            <label for="town">Town</label>
+            <input type="text" name="town" value="{{ worker.town }}">
+            <label for="profession">Profession</label>
+            <input type="text" name="profession" value="{{ worker.profession }}">
+            <label for="level_of_education">Level of Education</label>
+            <input type="text" name="level_of_education" value="{{ worker.level_of_education }}">
+            <label for="description">Description</label>
+            <input type="text" name="description" value="{{ worker.description }}">
+            <div class="profile-actions">
+                <button type="submit" class="btn">Update Profile</button>
+            </div>
+        </form>
+    </div>
+    <div class="divider"></div>
+    <h2>Available Jobs</h2>
+    <p>
+        <span class="matching-profession">Matching Profession: {{ worker.profession }}</span>
+        <span class="total-jobs">Total Jobs in Database: {{ total_jobs }}</span>
+    </p>
+    <table class="jobs-table">
+        <caption>Jobs matching your profession: {{ worker.profession }}</caption>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Salary</th>
+                <th>Type</th>
+                <th>Posted</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for job, employer in jobs %}
+        <tr>
+            <td class="job-company">{{ employer.company_name }}</td>
+            <td class="job-title">{{ job.job_title }}</td>
+            <td class="job-description">{{ job.job_description }}</td>
+            <td class="job-location">{{ job.job_location }}</td>
+            <td class="job-salary">{{ job.salary_range }}</td>
+            <td class="job-type">{{ job.employment_type|capitalize }}</td>
+            <td>
+                {% if job.post_date %}
+                    {{ job.post_date.strftime('%Y-%m-%d') }}
+                {% endif %}
+            </td>
+            <td>
+                <form action="{{ url_for('routes.apply_job', job_id=job.id) }}" method="POST">
+                    <button type="submit" class="apply-btn">Apply</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+            {% if total_jobs > 0 %}
+            <tr>
+                <td colspan="8" class="no-jobs">
+                    No jobs match your profession ({{ worker.profession }}), but there are {{ total_jobs }} jobs in the database.
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="no-jobs">
+                    No jobs available at the moment.
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 2.5rem auto;
+            background: #fff;
+            padding: 2.5rem 2rem 2rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(80,80,160,0.10);
+        }
+        h2 {
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: #2d3748;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 2px 8px #e0e7ff;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.3rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .btn {
+            margin-top: 1.5rem;
+            padding: 0.5rem 1.5rem;
+            background: #ff9800;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #6366f1;
+        }
+        .btn-secondary {
+            background: #888;
+            margin-left: 1rem;
+        }
+        .flash-message {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background: #e0ffe0;
+            color: #2e7d32;
+        }
+        .error-message {
+            color: #f44336;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Edit User</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST" autocomplete="off">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" value="{{ user.name }}" required>
+
+        <label for="phone_no">Phone Number</label>
+        <input type="text" id="phone_no" name="phone_no" value="{{ user.phone_no }}" required>
+
+        <label for="role">Role</label>
+        <select id="role" name="role" required>
+            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+            <option value="employer" {% if user.role == 'employer' %}selected{% endif %}>Employer</option>
+            <option value="worker" {% if user.role == 'worker' %}selected{% endif %}>Worker</option>
+        </select>
+
+        <label for="county">County</label>
+        <input type="text" id="county" name="county" value="{{ user.county or '' }}">
+
+        <label for="town">Town</label>
+        <input type="text" id="town" name="town" value="{{ user.town or '' }}">
+
+        <label for="password">New Password <span style="font-weight:400;color:#888;">(leave blank to keep unchanged)</span></label>
+        <input type="password" id="password" name="password" minlength="6">
+
+        <button type="submit" class="btn">Save Changes</button>
+        <a href="{{ url_for('routes.manage_users') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

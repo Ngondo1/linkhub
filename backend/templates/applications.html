@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Applications for {{ job.job_title }}</title>
+    <style>
+        body { background: #f8fafc; font-family: 'Segoe UI', Arial, sans-serif; color: #222; }
+        .container { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 18px; padding: 38px 32px; box-shadow: 0 8px 32px rgba(99,102,241,0.12);}
+        h1 { color: #6366f1; font-size: 2rem; font-weight: 800; margin-bottom: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 22px; }
+        th, td { padding: 15px 12px; border-bottom: 1px solid #eaeaea; text-align: left; }
+        th { background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%); color: #fff; font-weight: 700; }
+        tr:nth-child(even) { background: #f7f7f7; }
+        .no-apps { text-align: center; color: #888; font-size: 1.15rem; padding: 32px 0; }
+        .btn { background: linear-gradient(90deg, #6366f1 70%, #ff9800 100%); color: #fff; border: none; padding: 8px 18px; border-radius: 7px; cursor: pointer; font-weight: 700; font-size: 1rem; margin-right: 6px; }
+        .btn.reject { background: #ef4444; }
+        .rating-form input[type="number"] { width: 50px; padding: 5px; border-radius: 5px; border: 1px solid #eaeaea; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Applications for "{{ job.job_title }}"</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Applicant Name</th>
+                <th>Phone</th>
+                <th>Profession</th>
+                <th>Application Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for app in applications %}
+            <tr>
+                <td>{{ app.user.name if app.user else "N/A" }}</td>
+                <td>{{ app.user.phone_no if app.user else "N/A" }}</td>
+                <td>{{ app.user.profession if app.user else "N/A" }}</td>
+                <td>{{ app.application.application_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ app.application.status|capitalize }}</td>
+                <td>
+                    {% if app.application.status == "pending" %}
+                    <form method="POST" action="{{ url_for('routes.update_application', application_id=app.application.id) }}" style="display:inline;">
+                        <button name="action" value="accept" class="btn" type="submit">Accept</button>
+                        <button name="action" value="reject" class="btn reject" type="submit">Reject</button>
+                    </form>
+                    {% else %}
+                        {{ app.application.status|capitalize }}
+                    {% endif %}
+                </td>
+                <td>
+{% if app.application.status == "accepted" %}
+    {% if app.rating %}
+        <span style="color:#22c55e;font-weight:700;">{{ app.rating.rating }} / 5</span>
+        {% if app.rating.comment %}
+            <br><span style="color:#6366f1;">{{ app.rating.comment }}</span>
+        {% endif %}
+    {% else %}
+        <form method="POST" action="{{ url_for('routes.rate_employee', application_id=app.application.id) }}" class="rating-form" style="margin-bottom:8px;">
+            <input type="number" name="rating" min="1" max="5" required>
+            <button type="submit" class="btn">Rate</button>
+        </form>
+        <a href="{{ url_for('routes.rate_employee', application_id=app.application.id) }}" class="btn" style="background:#6366f1;">Add Comment</a>
+    {% endif %}
+{% elif app.application.status == "rejected" %}
+    -
+{% else %}
+    Awaiting decision
+{% endif %}
+</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="no-apps">No applications yet for this job.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

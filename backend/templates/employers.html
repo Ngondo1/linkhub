@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #2d3e50;
+            color: #fff;
+            padding: 24px 0 18px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+            padding: 36px 28px 28px 28px;
+        }
+        h1 {
+            margin-bottom: 0;
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        h2 {
+            color: #2d3e50;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+        .dashboard-cards {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .card {
+            flex: 1 1 220px;
+            background: #f0f4f8;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            color: #0077b6;
+        }
+        .card p {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+        }
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        th {
+            background: #f8fafc;
+            color: #2d3e50;
+        }
+        tr:hover {
+            background: #f1f7fa;
+        }
+        .btn {
+            background: #0077b6;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+            margin-right: 6px;
+        }
+        .btn:hover {
+            background: #023e8a;
+        }
+        .job-form {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 24px 18px 18px 18px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+            max-width: 600px;
+        }
+        .job-form label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #2d3e50;
+        }
+        .job-form input, .job-form textarea, .job-form select {
+            width: 100%;
+            padding: 9px 8px;
+            margin-bottom: 10px;
+            border: 1.2px solid #bcd0e5;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: #fff;
+        }
+        .job-form textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .job-form .btn {
+            margin-top: 10px;
+            width: 100%;
+        }
+        @media (max-width: 800px) {
+            .dashboard-cards {
+                flex-direction: column;
+            }
+            .container {
+                padding: 12px;
+            }
+            .job-form {
+                padding: 12px 6px 10px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ employer.name }}</h1>
+        <div style="font-size:1.1em; margin-top:6px;">Employer Dashboard</div>
+    </header>
+    <div class="container">
+        <h2>Post a New Job</h2>
+        <div style="margin-bottom: 2rem;">
+    <a href="{{ url_for('routes.post_job') }}" class="btn" style="width: 100%;">Go to Add Job Form</a>
+</div>
+
+
+<!-- Add this inside your .container div in employers.html -->
+
+<h2>Your Location</h2>
+<div style="margin-bottom: 2rem;">
+  <input type="text" id="location" name="location" placeholder="Loading your location..." readonly
+         style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px; margin-bottom: 10px;">
+  <div id="map" style="width: 100%; height: 420px; border-radius: 14px; margin: 18px 0 12px 0; border: 1px solid #ccc;"></div>
+  <button type="button" onclick="detectLocation()" style="margin-top: 10px; background: #00796b; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;">Detect My Location</button>
+</div>
+
+<!-- Google Maps API Key: Replace YOUR_API_KEY with a real one -->
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtwHYW_qjndhYw224ZeHi9ZSjn9MCfBUg&callback=initMap">
+</script>
+
+<script>
+function initMap() {
+  const nairobi = { lat: -1.286389, lng: 36.817223 };
+  window.map = new google.maps.Map(document.getElementById("map"), {
+    center: nairobi,
+    zoom: 11,
+  });
+
+  // Try to detect user location on map load
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        window.map.setCenter({lat, lng});
+        if (window.userMarker) window.userMarker.setMap(null);
+        window.userMarker = new google.maps.Marker({
+          position: {lat, lng},
+          map: window.map,
+          title: "Your Location",
+          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+        // Also update the input field
+        const locationInput = document.getElementById("location");
+        if (locationInput) locationInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      },
+      function (err) {
+        // Do nothing, keep Nairobi as default
+      }
+    );
+  }
+}
+
+function detectLocation() {
+  const locationInput = document.getElementById("location");
+  locationInput.value = "Loading your location...";
+  if (!navigator.geolocation) {
+    locationInput.value = "Geolocation not supported";
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    function (pos) {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      locationInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      // Center the map and add a marker for the user
+      if (window.map) {
+        window.map.setCenter({lat, lng});
+        if (window.userMarker) window.userMarker.setMap(null);
+        window.userMarker = new google.maps.Marker({
+          position: {lat, lng},
+          map: window.map,
+          title: "Your Location",
+          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+      }
+    },
+    function (err) {
+      locationInput.value = "Unable to retrieve your location";
+    }
+  );
+}
+</script>
+
+{% if user and user.role == "employer" %}
+  <section class="hero-form-card" style="margin: 2rem auto;">
+    <h2>Post a New Job</h2>
+    <form action="/add-job" method="POST" class="job-request-form" style="display: grid; gap: 1rem;">
+      <div>
+        <label for="jobCategory">Job Category</label>
+        <input type="text" id="jobCategory" name="jobCategory" required>
+      </div>
+      <div>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+      </div>
+      <div>
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" required>
+      </div>
+      <div>
+        <label for="salary_range">Salary Range</label>
+        <input type="text" id="salary_range" name="salary_range" placeholder="e.g. 20,000 - 30,000 KES">
+      </div>
+      <div>
+        <label for="employment_type">Employment Type</label>
+        <select id="employment_type" name="employment_type" required>
+          <option value="">Select type...</option>
+          <option value="full_time">Full Time</option>
+          <option value="part_time">Part Time</option>
+          <option value="contract">Contract</option>
+          <option value="temporary">Temporary</option>
+          <option value="casual">Casual</option>
+        </select>
+      </div>
+      <button type="submit">Post Job</button>
+    </form>
+  </section>
+{% endif %}
+
+        <h2>Your Job Posts</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Date Posted</th>
+                    <th>Status</th>
+                    <th>Applicants</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{ job.job_title }}</td>
+                    <td>{{ job.post_date.strftime('%Y-%m-%d') if job.post_date else '' }}</td>
+                    <td>{{ job.status }}</td>
+                    <td>{{ job.applicants|length if job.applicants else 0 }}</td>
+                    <td>
+                        <a href="{{ url_for('routes.view_applications', job_id=job.id) }}" class="btn">View</a>
+                        <a href="{{ url_for('routes.edit_job', job_id=job.id) }}" class="btn">Edit</a>
+                        <a href="{{ url_for('routes.view_applications', job_id=job.id) }}">View Applications</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align:center; color:#888;">No jobs posted yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

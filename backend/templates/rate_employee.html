@@ -1,0 +1,47 @@
+<!-- filepath: c:\Users\ngond\LINKHUB\backend\templates\rate_employee.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate Employee</title>
+    <style>
+        body { background: #f8fafc; font-family: 'Segoe UI', Arial, sans-serif; color: #222; }
+        .container { max-width: 500px; margin: 60px auto; background: #fff; border-radius: 18px; padding: 38px 32px; box-shadow: 0 8px 32px rgba(99,102,241,0.12); text-align: center;}
+        h1 { color: #6366f1; font-size: 2rem; font-weight: 800; margin-bottom: 18px; }
+        .info { margin-bottom: 18px; }
+        .form-group { margin-bottom: 18px; text-align: left;}
+        label { font-weight: 600; color: #222; }
+        input[type="number"], textarea { width: 100%; padding: 10px; border-radius: 7px; border: 1px solid #eaeaea; font-size: 1rem; }
+        .btn { background: linear-gradient(90deg, #6366f1 70%, #ff9800 100%); color: #fff; border: none; padding: 10px 28px; border-radius: 7px; cursor: pointer; font-weight: 700; font-size: 1rem; margin-top: 10px;}
+        .btn:hover { background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%);}
+        .success { color: #22c55e; font-weight: 700; margin-top: 22px; font-size: 1.1rem;}
+        .error { color: #ef4444; font-weight: 700; margin-top: 22px; font-size: 1.1rem;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Rate {{ user.name }}</h1>
+    <div class="info">
+        <strong>Profession:</strong> {{ user.profession }}<br>
+        <strong>Application for:</strong> {{ application.job.job_title }}
+    </div>
+    <form method="POST">
+        <div class="form-group">
+            <label for="rating">Rating (1-5):</label>
+            <input type="number" name="rating" min="1" max="5" required value="{{ rating.rating if rating else '' }}">
+        </div>
+        <div class="form-group">
+            <label for="comment">Comment:</label>
+            <textarea name="comment" rows="4" placeholder="Add a comment...">{{ rating.comment if rating else '' }}</textarea>
+        </div>
+        <button type="submit" class="btn">Submit Rating</button>
+    </form>
+    {% if rating %}
+        <div class="success">Current Rating: {{ rating.rating }} / 5<br>{{ rating.comment }}</div>
+    {% endif %}
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+</div>
+</body>
+</html>

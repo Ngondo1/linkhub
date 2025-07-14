@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Matches</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6fb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            padding: 32px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3a4b;
+        }
+        .controls {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .controls label {
+            font-weight: 600;
+            color: #34495e;
+        }
+        .controls input, .controls select {
+            padding: 7px 10px;
+            border-radius: 5px;
+            border: 1px solid #bcd0e5;
+            font-size: 1em;
+        }
+        .controls button {
+            background: #4f8cff;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .controls button.active, .controls button:hover {
+            background: #2d3a4b;
+        }
+        .match-list {
+            margin-top: 24px;
+        }
+        .match {
+            background: #eaf0fa;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+        }
+        .match-info {
+            font-size: 1.1em;
+            color: #34495e;
+        }
+        .match-skills {
+            color: #0077b6;
+            font-weight: 600;
+        }
+        .match-count {
+            margin: 0 0 18px 0;
+            color: #6366f1;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-align: right;
+        }
+        .algo-explanation {
+            margin-top: 40px;
+            background: #f9fafc;
+            border-left: 4px solid #4f8cff;
+            padding: 18px 24px;
+            border-radius: 6px;
+            color: #2d3a4b;
+        }
+        .no-matches {
+            text-align: center;
+            color: #888;
+            font-size: 1.1em;
+            margin-top: 32px;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 10px; }
+            .match { flex-direction: column; align-items: flex-start; }
+            .controls { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Matches</h1>
+        <div class="controls">
+            <button id="userModeBtn" class="active">User-User Matching</button>
+            <button id="jobModeBtn">Job-Employee Matching</button>
+            <label for="filterInput">Filter by Skill/Interest:</label>
+            <input type="text" id="filterInput" placeholder="e.g. Python, React">
+            <button id="clearFilterBtn">Clear Filter</button>
+        </div>
+        <div class="match-count" id="matchCount"></div>
+        <div class="match-list" id="matchList"></div>
+        <div class="algo-explanation" id="algoExplanation"></div>
+    </div>
+    <script>
+        const users = {{ users|tojson }};
+         const jobs = {{ jobs|tojson }};
+            const employees = {{ employees|tojson }};
+            
+        // --- Matching Algorithms ---
+        function findUserMatches(users, filter = "") {
+            let matches = [];
+            for (let i = 0; i < users.length; i++) {
+                for (let j = i + 1; j < users.length; j++) {
+                    let shared = users[i].interests.filter(interest =>
+                        users[j].interests.includes(interest)
+                    );
+                    if (filter) {
+                        shared = shared.filter(skill => skill.toLowerCase().includes(filter.toLowerCase()));
+                    }
+                    if (shared.length > 0) {
+                        matches.push({
+                            user1: users[i].name,
+                            user2: users[j].name,
+                            sharedInterests: shared
+                        });
+                    }
+                }
+            }
+            return matches;
+        }
+
+        function findJobMatches(jobs, employees, filter = "") {
+            let matches = [];
+            jobs.forEach(job => {
+                employees.forEach(emp => {
+                    let shared = job.skills.filter(skill =>
+                        emp.skills.includes(skill)
+                    );
+                    if (filter) {
+                        shared = shared.filter(skill => skill.toLowerCase().includes(filter.toLowerCase()));
+                    }
+                    if (shared.length > 0) {
+                        matches.push({
+                            job: job.title,
+                            employee: emp.name,
+                            sharedSkills: shared
+                        });
+                    }
+                });
+            });
+            return matches;
+        }
+
+        // --- Rendering Functions ---
+        function renderMatches(matches, mode) {
+            const matchList = document.getElementById('matchList');
+            const matchCount = document.getElementById('matchCount');
+            matchList.innerHTML = '';
+            matchCount.textContent = `Total Matches: ${matches.length}`;
+            if (matches.length === 0) {
+                matchList.innerHTML = '<div class="no-matches">No matches found.</div>';
+                return;
+            }
+            matches.forEach(match => {
+                const div = document.createElement('div');
+                div.className = 'match';
+                if (mode === "user") {
+                    div.innerHTML = `
+                        <div class="match-info">
+                            <strong>${match.user1}</strong> &amp; <strong>${match.user2}</strong>
+                            <br>
+                            <span class="match-skills">Shared interests: ${match.sharedInterests.join(', ')}</span>
+                        </div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <div class="match-info">
+                            <strong>Job:</strong> ${match.job}<br>
+                            <strong>Employee:</strong> ${match.employee}<br>
+                            <span class="match-skills">Shared skills: ${match.sharedSkills.join(', ')}</span>
+                        </div>
+                    `;
+                }
+                matchList.appendChild(div);
+            });
+        }
+
+        function renderAlgorithmExplanation(mode) {
+            const explanation = document.getElementById('algoExplanation');
+            if (mode === "user") {
+                explanation.innerHTML = `
+                    <h3>How User-User Matches Are Created</h3>
+                    <p>
+                        Users are matched based on shared interests. For each pair of users, 
+                        if they have at least one interest in common, a match is created and displayed above.
+                    </p>
+                    <ul>
+                        <li>Each user has a list of interests.</li>
+                        <li>Pairs are compared for overlapping interests.</li>
+                        <li>Shared interests are shown for each match.</li>
+                        <li>You can filter matches by typing a skill or interest.</li>
+                    </ul>
+                `;
+            } else {
+                explanation.innerHTML = `
+                    <h3>How Job-Employee Matches Are Created</h3>
+                    <p>
+                        Employees are matched to jobs based on shared skills. For each job, 
+                        employees whose skills overlap with the job's requirements are shown above.
+                    </p>
+                    <ul>
+                        <li>Each job has a list of required skills.</li>
+                        <li>Each employee has a list of skills.</li>
+                        <li>If an employee's skills match a job's requirements, a match is created.</li>
+                        <li>You can filter matches by typing a skill.</li>
+                    </ul>
+                `;
+            }
+        }
+
+        // --- UI Controls ---
+        let mode = "user"; // "user" or "job"
+        let filter = "";
+
+        function updateMatches() {
+            let matches;
+            if (mode === "user") {
+                matches = findUserMatches(users, filter);
+            } else {
+                matches = findJobMatches(jobs, employees, filter);
+            }
+            renderMatches(matches, mode);
+            renderAlgorithmExplanation(mode);
+        }
+
+        document.getElementById('userModeBtn').onclick = function() {
+            mode = "user";
+            this.classList.add("active");
+            document.getElementById('jobModeBtn').classList.remove("active");
+            updateMatches();
+        };
+        document.getElementById('jobModeBtn').onclick = function() {
+            mode = "job";
+            this.classList.add("active");
+            document.getElementById('userModeBtn').classList.remove("active");
+            updateMatches();
+        };
+        document.getElementById('filterInput').oninput = function() {
+            filter = this.value;
+            updateMatches();
+        };
+        document.getElementById('clearFilterBtn').onclick = function() {
+            document.getElementById('filterInput').value = "";
+            filter = "";
+            updateMatches();
+        };
+
+        // --- Initial Render ---
+        updateMatches();
+    </script>
+</body>
+</html>

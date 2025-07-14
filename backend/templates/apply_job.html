@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply for Job</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #222;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 540px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 18px;
+            padding: 38px 32px;
+            box-shadow: 0 8px 32px rgba(99,102,241,0.12);
+            text-align: center;
+        }
+        h1 {
+            color: #6366f1;
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+        .job-info {
+            margin-bottom: 28px;
+            text-align: left;
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 18px 16px;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.07);
+        }
+        .job-info strong {
+            color: #ff9800;
+        }
+        .btn {
+            background: linear-gradient(90deg, #6366f1 70%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            padding: 13px 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.15rem;
+            box-shadow: 0 2px 10px rgba(99,102,241,0.10);
+            transition: background 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.5px;
+            margin-top: 18px;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%);
+            box-shadow: 0 4px 18px rgba(99,102,241,0.18);
+        }
+        .success {
+            color: #22c55e;
+            font-weight: 700;
+            margin-top: 22px;
+            font-size: 1.1rem;
+        }
+        .error {
+            color: #ef4444;
+            font-weight: 700;
+            margin-top: 22px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Apply for Job</h1>
+    <div class="job-info">
+        <p><strong>Company:</strong> {{ employer.company_name }}</p>
+        <p><strong>Title:</strong> {{ job.job_title }}</p>
+        <p><strong>Description:</strong> {{ job.job_description }}</p>
+        <p><strong>Location:</strong> {{ job.job_location }}</p>
+        <p><strong>Salary:</strong> {{ job.salary_range }}</p>
+        <p><strong>Type:</strong> {{ job.employment_type|capitalize }}</p>
+        <p><strong>Posted:</strong> {{ job.post_date.strftime('%Y-%m-%d') if job.post_date else '' }}</p>
+    </div>
+    <form method="POST">
+        <button type="submit" class="btn">Confirm Application</button>
+    </form>
+    {% if success %}
+        <div class="success">{{ success }}</div>
+    {% endif %}
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+</div>
+</body>
+</html>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px 28px;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.15);
+        }
+        h1 {
+            color: #4f46e5;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .job-info {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(99,102,241,0.08);
+        }

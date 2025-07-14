@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinkHub Login</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; }
+    .login-card {
+      max-width: 400px; margin: 80px auto; background: #fff;
+      border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      padding: 40px 32px 32px 32px;
+    }
+    .login-card h2 { text-align: center; color: #004d47; }
+    .login-card label { font-weight: 600; display: block; margin-bottom: 0.3rem; }
+    .login-card input, .login-card select {
+      width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #b2dfdb;
+      margin-bottom: 1.2rem; font-size: 1rem; background: #f7fafc;
+    }
+    .login-card button {
+      background: #009688; color: #fff; border: none; border-radius: 8px;
+      padding: 14px 0; width: 100%; font-weight: 700; font-size: 1.1rem;
+      cursor: pointer; margin-top: 0.5rem;
+    }
+    .flash-message { margin-bottom: 1rem; color: #c00; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>Sign In to LinkHub</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('routes.login') }}">
+      <label for="role">Role</label>
+      <select name="role" id="role" required>
+        <option value="admin">Admin</option>
+        <option value="employer">Employer</option>
+        <option value="worker">Worker</option>
+      </select>
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" required>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>
+    </form>
+    <p class="message">Don't have an account? <a href="{{ url_for('routes.login') }}">Register here</a></p>
+  </div>

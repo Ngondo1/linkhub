@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Site Settings</title>
+    <style>
+        body { background: #f8f9fa; font-family: Arial, sans-serif; }
+        .container { max-width: 500px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 8px; }
+        h2 { margin-bottom: 1.5rem; }
+        label { display: block; margin-top: 1rem; font-weight: bold; }
+        input[type="text"], input[type="email"] {
+            width: 100%; padding: 0.5rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .switch {
+            position: relative; display: inline-block; width: 50px; height: 24px; margin-top: 0.3rem;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #ff9800; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .btn {
+            margin-top: 1.5rem; padding: 0.5rem 1.5rem; background: #ff9800; color: #fff;
+            border: none; border-radius: 4px; font-size: 1rem; cursor: pointer;
+        }
+        .btn:hover { background: #e68900; }
+        .top-actions { margin-bottom: 1rem; }
+        .flash-message { margin: 1rem 0; padding: 0.5rem; border-radius: 4px; background: #e0ffe0; color: #2e7d32; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Site Settings</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <label for="site_name">Site Name</label>
+        <input type="text" id="site_name" name="site_name" value="{{ settings.site_name }}" required>
+
+        <label for="contact_email">Contact Email</label>
+        <input type="email" id="contact_email" name="contact_email" value="{{ settings.contact_email or '' }}" required>
+
+        <label for="maintenance_mode">Maintenance Mode</label>
+        <label class="switch">
+            <input type="checkbox" id="maintenance_mode" name="maintenance_mode" value="1" {% if settings.maintenance_mode %}checked{% endif %}>
+            <span class="slider"></span>
+        </label>
+        <span style="margin-left:10px;">Enable maintenance mode</span>
+
+        <button type="submit" class="btn">Save Settings</button>
+    </form>
+
+</div>
+<script>
+    // Example: Show a warning if maintenance mode is enabled
+    document.getElementById('maintenance_mode').addEventListener('change', function() {
+        if(this.checked) {
+            alert('Maintenance mode enabled! The site will be unavailable to regular users.');
+        }
+    });
+</script>
+</body>
+</html>

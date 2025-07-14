@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Logs</title>
+ <style>
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 2.5rem auto;
+        background: #fff;
+        padding: 2.5rem 2rem 2rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(80,80,160,0.10);
+    }
+    h2 {
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        color: #2d3748;
+        font-weight: 700;
+        text-align: center;
+        text-shadow: 0 2px 8px #e0e7ff;
+    }
+    .btn {
+        padding: 0.45rem 1.2rem;
+        background: #ff9800;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: background 0.2s;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+    .btn:hover {
+        background: #6366f1;
+        color: #fff;
+    }
+    .search-box {
+        width: 100%;
+        max-width: 350px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1.2rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        background: #fff;
+        font-size: 1rem;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    th, td {
+        padding: 1rem 0.7rem;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    th {
+        background: linear-gradient(90deg, #ff9800 70%, #6366f1 100%);
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border: none;
+        cursor: pointer;
+        user-select: none;
+    }
+    tr:nth-child(even) {
+        background: #f7f7f7;
+    }
+    tr:hover {
+        background: #ffe0b2;
+        transition: background 0.2s;
+    }
+    .highlight {
+        background: #fff3cd !important;
+        color: #d97706 !important;
+        font-weight: bold;
+    }
+    @media (max-width: 900px) {
+        .container {
+            padding: 1rem;
+        }
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+        th, td {
+            padding: 0.7rem 0.5rem;
+        }
+        tr {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>System Logs</h2>
+    <a href="{{ url_for('routes.admin_dashboard') }}" class="btn">Back to Dashboard</a>
+    <input type="text" id="search" class="search-box" placeholder="Search logs...">
+    {% if logs %}
+    <table id="logs-table">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">ID &#x25B2;&#x25BC;</th>
+                <th onclick="sortTable(1)">User &#x25B2;&#x25BC;</th>
+                <th onclick="sortTable(2)">Action &#x25B2;&#x25BC;</th>
+                <th onclick="sortTable(3)">Timestamp &#x25B2;&#x25BC;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.id }}</td>
+                <td>{{ log.user.name if log.user else 'N/A' }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No logs found.</p>
+    {% endif %}
+</div>
+<script>
+    // Search/filter logs
+    document.getElementById('search').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#logs-table tbody tr');
+        rows.forEach(row => {
+            let text = row.textContent.toLowerCase();
+            if (filter && text.includes(filter)) {
+                row.style.display = '';
+                // Highlight matches
+                row.querySelectorAll('td').forEach(td => {
+                    let html = td.textContent;
+                    if (filter && html.toLowerCase().includes(filter)) {
+                        td.innerHTML = html.replace(new RegExp(filter, 'gi'), match => `<span class="highlight">${match}</span>`);
+                    } else {
+                        td.innerHTML = html;
+                    }
+                });
+            } else if (!filter) {
+                row.style.display = '';
+                row.querySelectorAll('td').forEach(td => td.innerHTML = td.textContent);
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // Sort table columns
+    function sortTable(n) {
+        let table = document.getElementById("logs-table");
+        let rows = Array.from(table.rows).slice(1); // skip header
+        let asc = table.getAttribute("data-sort-dir") !== "asc";
+        rows.sort((a, b) => {
+            let x = a.cells[n].textContent.trim().toLowerCase();
+            let y = b.cells[n].textContent.trim().toLowerCase();
+            if (!isNaN(x) && !isNaN(y)) {
+                x = Number(x); y = Number(y);
+            }
+            if (x < y) return asc ? -1 : 1;
+            if (x > y) return asc ? 1 : -1;
+            return 0;
+        });
+        rows.forEach(row => table.tBodies[0].appendChild(row));
+        table.setAttribute("data-sort-dir", asc ? "asc" : "desc");
+    }
+</script>
+</body>
+</html>

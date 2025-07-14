@@ -1,0 +1,121 @@
+<!-- filepath: backend/templates/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | LinkHub</title>
+  <style>
+    body {
+      background: linear-gradient(120deg, #e0f7fa 0%, #fffde4 100%);
+      font-family: 'Inter', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-card {
+      max-width: 400px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      padding: 40px 32px 32px 32px;
+      margin: 32px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .login-card h2 {
+      color: #004d47;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .login-card label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.3rem;
+      color: #004d47;
+      letter-spacing: 0.5px;
+    }
+    .login-card input,
+    .login-card select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #b2dfdb;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      background: #f7fafc;
+      transition: border 0.2s;
+    }
+    .login-card input:focus,
+    .login-card select:focus {
+      border: 1.5px solid #009688;
+      outline: none;
+      background: #fff;
+    }
+    .login-card button {
+      background: linear-gradient(90deg, #ff9800 0%, #ffb74d 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 0;
+      width: 100%;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 8px rgba(255,152,0,0.08);
+      transition: background 0.2s;
+    }
+    .login-card button:hover {
+      background: linear-gradient(90deg, #ffb74d 0%, #ff9800 100%);
+    }
+    .flash-message {
+      margin-bottom: 1rem;
+      color: #c00;
+      text-align: center;
+      background: #ffeaea;
+      border-radius: 6px;
+      padding: 8px 0;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>Sign In to LinkHub</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('routes.login') }}">
+      <label for="role">Role</label>
+      <select name="role" id="role" required>
+        <option value="admin">Admin</option>
+        <option value="employer">Employer</option>
+        <option value="worker">Worker</option>
+      </select>
+      <label for="username">Username or Phone</label>
+      <input type="text" name="username" id="username" required>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+  <script>
+    // Optional: Add focus to the first input field on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('username').focus();
+    });
+  </script>
+</body>
+</html>

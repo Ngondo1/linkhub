@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Jobs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3a4b;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 24px 0;
+        }
+        .stat {
+            background: #eaf1fb;
+            padding: 18px 32px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+        }
+        .stat h2 {
+            margin: 0;
+            color: #1a73e8;
+            font-size: 2.2em;
+        }
+        .stat p {
+            margin: 8px 0 0 0;
+            color: #4b5c6b;
+            font-size: 1em;
+        }
+        .jobs-list {
+            margin-top: 32px;
+        }
+        .job-card {
+            background: #f9fafc;
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 20px 28px;
+            margin-bottom: 18px;
+            transition: box-shadow 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 2px 12px rgba(26,115,232,0.08);
+        }
+        .job-title {
+            font-size: 1.3em;
+            color: #2d3a4b;
+            margin: 0 0 8px 0;
+        }
+        .job-meta {
+            color: #6b7c93;
+            font-size: 0.98em;
+            margin-bottom: 6px;
+        }
+        .job-desc {
+            color: #4b5c6b;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Available Jobs</h1>
+    <div class="stats" id="job-stats">
+        <div class="stat">
+            <h2 id="total-jobs">0</h2>
+            <p>Total Jobs</p>
+        </div>
+        <div class="stat">
+            <h2 id="unique-companies">0</h2>
+            <p>Unique Companies</p>
+        </div>
+        <div class="stat">
+            <h2 id="most-common-role">-</h2>
+            <p>Most Common Role</p>
+        </div>
+        <div class="stat">
+            <h2 id="avg-title-length">0</h2>
+            <p>Avg. Title Length</p>
+        </div>
+    </div>
+    <div class="jobs-list" id="jobs-list">
+        {% for job in jobs %}
+        <div class="job-card" data-title="{{ job.title }}" data-company="{{ job.company }}" data-role="{{ job.role }}">
+            <div class="job-title">{{ job.title }}</div>
+            <div class="job-meta">{{ job.company }} &mdash; {{ job.location }}</div>
+            <div class="job-desc">{{ job.description|truncatewords:30 }}</div>
+        </div>
+        {% empty %}
+        <p>No jobs available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    // Collect job data from DOM
+    function getJobData() {
+        const cards = document.querySelectorAll('.job-card');
+        let jobs = [];
+        cards.forEach(card => {
+            jobs.push({
+                title: card.getAttribute('data-title'),
+                company: card.getAttribute('data-company'),
+                role: card.getAttribute('data-role')
+            });
+        });
+        return jobs;
+    }
+
+    // Count total jobs
+    function countTotalJobs(jobs) {
+        return jobs.length;
+    }
+
+    // Count unique companies using a Set
+    function countUniqueCompanies(jobs) {
+        const companies = new Set(jobs.map(j => j.company));
+        return companies.size;
+    }
+
+    // Find the most common role using a frequency map
+    function mostCommonRole(jobs) {
+        const freq = {};
+        jobs.forEach(j => {
+            freq[j.role] = (freq[j.role] || 0) + 1;
+        });
+        let max = 0, role = '-';
+        for (const r in freq) {
+            if (freq[r] > max) {
+                max = freq[r];
+                role = r;
+            }
+        }
+        return role;
+    }
+
+    // Calculate average job title length using reduce
+    function avgTitleLength(jobs) {
+        if (jobs.length === 0) return 0;
+        const total = jobs.reduce((sum, j) => sum + j.title.length, 0);
+        return (total / jobs.length).toFixed(1);
+    }
+
+    // Animate number increment
+    function animateValue(id, start, end, duration) {
+        const obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.textContent = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.textContent = end;
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Main function to update stats
+    function updateStats() {
+        const jobs = getJobData();
+        const total = countTotalJobs(jobs);
+        const unique = countUniqueCompanies(jobs);
+        const commonRole = mostCommonRole(jobs);
+        const avgLen = avgTitleLength(jobs);
+
+        animateValue('total-jobs', 0, total, 800);
+        animateValue('unique-companies', 0, unique, 800);
+        document.getElementById('most-common-role').textContent = commonRole;
+        document.getElementById('avg-title-length').textContent = avgLen;
+    }
+
+    // Advanced: Shuffle jobs list using Fisher-Yates and display top 5 on reload
+    function shuffleJobs() {
+        const list = document.getElementById('jobs-list');
+        const cards = Array.from(list.children);
+        for (let i = cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [cards[i], cards[j]] = [cards[j], cards[i]];
+        }
+        // Show only top 5 jobs for demo
+        list.innerHTML = '';
+        cards.slice(0, 5).forEach(card => list.appendChild(card));
+    }
+
+    // On page load
+    document.addEventListener('DOMContentLoaded', function() {
+        shuffleJobs();
+        updateStats();
+    });
+</script>
+</body>
+</html>

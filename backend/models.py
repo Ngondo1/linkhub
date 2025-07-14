@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, jsonify, request, render_template, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import enum
@@ -57,6 +59,7 @@ class User(db.Model):
     age = db.Column(db.Integer)
     phone_no = db.Column(db.String(30), unique=True)
     gender = db.Column(db.String(20))
+    
     county = db.Column(db.String(100))
     town = db.Column(db.String(100))
     level_of_education = db.Column(db.String(100))
@@ -65,6 +68,9 @@ class User(db.Model):
     religion = db.Column(db.String(100))
     ethnicity = db.Column(db.String(100))
     description = db.Column(db.Text)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(512), nullable=False)
+    role = db.Column(db.String(20), nullable=False)  # e.g., "admin", "employer", "worker"
 
     employer = db.relationship("Employer", back_populates="user", uselist=False)
     employee = db.relationship("Employee", back_populates="user", uselist=False)
@@ -72,9 +78,37 @@ class User(db.Model):
     sent_ratings = db.relationship("Rating", foreign_keys="Rating.rater_id", back_populates="rater")
     received_ratings = db.relationship("Rating", foreign_keys="Rating.rated_id", back_populates="rated")
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
     def __repr__(self):
         return f"<User {self.id} – {self.name}>"
+    
+class SiteSetting(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    site_name = db.Column(db.String(100), default="LinkHub")
+    contact_email = db.Column(db.String(120))
+    maintenance_mode = db.Column(db.Boolean, default=False)
 
+class Content(db.Model):
+    __tablename__ = "content"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    author = db.relationship("User", backref="contents")
+
+
+class Log(db.Model):
+    __tablename__ = "logs"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    action = db.Column(db.String(255), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user = db.relationship("User", backref="logs")
 
 class Employer(db.Model):
     __tablename__ = "employers"

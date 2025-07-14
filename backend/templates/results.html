@@ -74,6 +74,23 @@
       border-radius: 8px;
       font-size: 1.1rem;
     }
+    .map-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto 2.5rem auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+#map {
+  width: 100%;
+  height: 420px;
+  min-height: 320px;
+  border-radius: 16px;
+}
+@media (max-width: 700px) {
+  #map { height: 320px; }
+}
   </style>
 </head>
 <body>
@@ -84,6 +101,9 @@
     {% if jobs and jobs|length > 0 %}
     <div class="job-results">
       {% for job in jobs %}
+      <div class="map-section">
+      <div id="map"></div>
+      </div>
       <div class="job-card">
         <h3>{{ job.job_title }}</h3>
         <p><strong>Location:</strong> {{ job.job_location }}</p>
@@ -100,6 +120,51 @@
     </div>
     {% endif %}
   </main>
+  <script>
+  let map, userMarker;
+
+  function initMap() {
+    // Try to get user location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          map = new google.maps.Map(document.getElementById("map"), {
+            center: {lat, lng},
+            zoom: 13,
+            gestureHandling: "greedy" // allows one-finger drag on mobile
+          });
+          userMarker = new google.maps.Marker({
+            position: {lat, lng},
+            map: map,
+            title: "Your Location",
+            icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+          });
+        },
+        function() {
+          // If denied, fallback to Nairobi
+          showDefaultMap();
+        }
+      );
+    } else {
+      showDefaultMap();
+    }
+  }
+
+  function showDefaultMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: {lat: -1.286389, lng: 36.817223}, // Nairobi coordinates
+      zoom: 10,
+      gestureHandling: "greedy"
+    });
+    userMarker = new google.maps.Marker({
+      position: {lat: -1.286389, lng: 36.817223},
+      map: map,
+      title: "Default Location",
+      icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+    });
+  }
 </body>
 </html>
 
